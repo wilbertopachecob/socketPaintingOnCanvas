@@ -12,6 +12,7 @@ app.set('port', process.env.PORT || 3000);
 
 //Middlewares
 app.use(morgan('dev'));
+
 //Sockets
 require('./socket')(io);
 //Static files
