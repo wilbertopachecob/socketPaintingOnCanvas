@@ -19,6 +19,10 @@ A real-time collaborative drawing application built with Node.js, Express, and S
 socketPaintingOnCanvas/
 ├── src/
 │   ├── server.js              # Main server file
+│   ├── routes/
+│   │   ├── index.js           # Main router
+│   │   ├── health.js          # Health check routes
+│   │   └── users.js           # User-related routes
 │   └── socket/
 │       ├── socketHandler.js   # Socket.IO event handlers
 │       └── drawingManager.js  # Drawing state management
@@ -70,12 +74,20 @@ npm run dev
 
 ## API Endpoints
 
+### Application Routes
 - `GET /` - Serve the main application
-- `GET /health` - Health check endpoint
-- `GET /users` - Get current user count and limit
 - `GET /css/style.css` - Application styles
 - `GET /js/canvas.js` - Canvas drawing logic
 - `GET /js/index.js` - Main application logic
+
+### API Routes
+- `GET /api` - API root with available endpoints
+- `GET /api/health` - Health check endpoint
+- `GET /api/users` - Get current user count and limit
+
+### Legacy Routes (Redirects)
+- `GET /health` - Redirects to `/api/health`
+- `GET /users` - Redirects to `/api/users`
 
 ## Socket.IO Events
 
@@ -97,6 +109,7 @@ npm run dev
 The application uses a modular architecture with clear separation of concerns:
 
 - **Server** (`src/server.js`): Express server setup with middleware and error handling
+- **Routes** (`src/routes/`): Organized API endpoints with modular routing
 - **Socket Handler** (`src/socket/socketHandler.js`): Manages Socket.IO connections and events
 - **Drawing Manager** (`src/socket/drawingManager.js`): Handles drawing state and validation
 
