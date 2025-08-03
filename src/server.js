@@ -4,6 +4,7 @@ const path = require('path');
 const http = require('http');
 const socketIO = require('socket.io');
 const socketHandler = require('./socket/socketHandler');
+const routes = require('./routes');
 
 // Initialize express app
 const app = express();
@@ -22,24 +23,23 @@ app.use(express.urlencoded({ extended: true }));
 // Static files
 app.use(express.static(path.join(__dirname, '../public')));
 
-// Routes
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
-});
-
-// Get current user count
-app.get('/users', (req, res) => {
-  try {
-    const userCount = socketHandlerInstance.getUserCount();
-    res.status(200).json(userCount);
-  } catch (error) {
-    console.error('Error getting user count:', error);
-    res.status(500).json({ error: 'Failed to get user count' });
-  }
-});
-
 // Socket.IO handler
 const socketHandlerInstance = socketHandler(io);
+
+// Store socket handler instance in app locals for routes to access
+app.locals.socketHandler = socketHandlerInstance;
+
+// Legacy route redirects for backward compatibility (must come before API routes)
+app.get('/health', (req, res) => {
+  res.redirect(301, '/api/health');
+});
+
+app.get('/users', (req, res) => {
+  res.redirect(301, '/api/users');
+});
+
+// API routes
+app.use('/api', routes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
