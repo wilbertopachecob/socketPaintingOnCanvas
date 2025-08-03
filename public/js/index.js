@@ -32,6 +32,18 @@ class DrawingApp {
       console.error('Connection error:', error);
       this.showError('Connection failed. Please refresh the page.');
     });
+
+    // Handle connection rejection due to user limit
+    this.socket.on('connection_rejected', (data) => {
+      console.log('Connection rejected:', data.message);
+      this.showError(data.message);
+      this.updateConnectionStatus(false);
+    });
+
+    // Handle user count updates
+    this.socket.on('user_count_update', (data) => {
+      this.updateUserCount(data.currentUsers, data.maxUsers);
+    });
   }
 
   setupCanvas() {
@@ -77,6 +89,9 @@ class DrawingApp {
       <div class="control-group">
         <span id="connection-status" class="status-indicator">Connecting...</span>
       </div>
+      <div class="control-group">
+        <span id="user-count" class="user-count">Users: 0/10</span>
+      </div>
     `;
 
     document.body.appendChild(controlsContainer);
@@ -87,7 +102,8 @@ class DrawingApp {
       colorPicker: document.querySelector('#color-picker'),
       lineWidthSlider: document.querySelector('#line-width-slider'),
       lineWidthDisplay: document.querySelector('#line-width-display'),
-      connectionStatus: document.querySelector('#connection-status')
+      connectionStatus: document.querySelector('#connection-status'),
+      userCount: document.querySelector('#user-count')
     };
   }
 
@@ -127,6 +143,12 @@ class DrawingApp {
     if (this.controls.connectionStatus) {
       this.controls.connectionStatus.textContent = connected ? 'Connected' : 'Disconnected';
       this.controls.connectionStatus.className = `status-indicator ${connected ? 'connected' : 'disconnected'}`;
+    }
+  }
+
+  updateUserCount(currentUsers, maxUsers) {
+    if (this.controls.userCount) {
+      this.controls.userCount.textContent = `Users: ${currentUsers}/${maxUsers}`;
     }
   }
 

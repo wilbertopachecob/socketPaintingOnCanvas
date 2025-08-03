@@ -27,8 +27,19 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
+// Get current user count
+app.get('/users', (req, res) => {
+  try {
+    const userCount = socketHandlerInstance.getUserCount();
+    res.status(200).json(userCount);
+  } catch (error) {
+    console.error('Error getting user count:', error);
+    res.status(500).json({ error: 'Failed to get user count' });
+  }
+});
+
 // Socket.IO handler
-socketHandler(io);
+const socketHandlerInstance = socketHandler(io);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
