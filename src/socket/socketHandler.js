@@ -4,12 +4,33 @@ class SocketHandler {
   constructor(io) {
     this.io = io;
     this.drawingManager = new DrawingManager();
+    this.connectedUsers = new Set();
+    this.maxUsers = 10; // Limit to 10 users
     this.setupSocketHandlers();
   }
 
   setupSocketHandlers() {
     this.io.on('connection', (socket) => {
-      console.log(`User connected: ${socket.id}`);
+      // Check if we've reached the user limit
+      if (this.connectedUsers.size >= this.maxUsers) {
+        console.log(`Connection rejected: User limit reached (${this.maxUsers} users)`);
+        socket.emit('connection_rejected', { 
+          message: 'Server is at maximum capacity. Please try again later.',
+          maxUsers: this.maxUsers
+        });
+        socket.disconnect();
+        return;
+      }
+
+      // Add user to connected users set
+      this.connectedUsers.add(socket.id);
+      console.log(`User connected: ${socket.id} (${this.connectedUsers.size}/${this.maxUsers} users)`);
+      
+      // Send current user count to all clients
+      this.io.emit('user_count_update', { 
+        currentUsers: this.connectedUsers.size, 
+        maxUsers: this.maxUsers 
+      });
       
       // Send existing drawing history to new user
       this.sendDrawingHistory(socket);
@@ -26,7 +47,14 @@ class SocketHandler {
 
       // Handle disconnect
       socket.on('disconnect', () => {
-        console.log(`User disconnected: ${socket.id}`);
+        this.connectedUsers.delete(socket.id);
+        console.log(`User disconnected: ${socket.id} (${this.connectedUsers.size}/${this.maxUsers} users)`);
+        
+        // Update user count for remaining clients
+        this.io.emit('user_count_update', { 
+          currentUsers: this.connectedUsers.size, 
+          maxUsers: this.maxUsers 
+        });
       });
 
       // Handle errors
@@ -86,6 +114,14 @@ class SocketHandler {
            typeof coord.y === 'number' &&
            coord.x >= 0 && coord.x <= 1 &&
            coord.y >= 0 && coord.y <= 1);
+  }
+
+  // Get current user count and limit
+  getUserCount() {
+    return {
+      currentUsers: this.connectedUsers.size,
+      maxUsers: this.maxUsers
+    };
   }
 }
 

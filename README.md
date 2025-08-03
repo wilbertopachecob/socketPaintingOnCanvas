@@ -5,6 +5,7 @@ A real-time collaborative drawing application built with Node.js, Express, and S
 ## Features
 
 - **Real-time Collaboration**: Multiple users can draw simultaneously
+- **User Limit**: Maximum of 10 concurrent users (configurable)
 - **Drawing Tools**: Adjustable line width and color picker
 - **Canvas Controls**: Clear canvas functionality
 - **Mobile Support**: Touch events for mobile devices
@@ -71,6 +72,7 @@ npm run dev
 
 - `GET /` - Serve the main application
 - `GET /health` - Health check endpoint
+- `GET /users` - Get current user count and limit
 - `GET /css/style.css` - Application styles
 - `GET /js/canvas.js` - Canvas drawing logic
 - `GET /js/index.js` - Main application logic
@@ -84,6 +86,8 @@ npm run dev
 ### Server to Client
 - `draw_line` - Receive drawing line data
 - `clear_canvas` - Canvas cleared notification
+- `connection_rejected` - Connection rejected due to user limit
+- `user_count_update` - Update of current user count
 - `error` - Error messages
 
 ## Technical Details

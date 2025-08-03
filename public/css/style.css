@@ -133,6 +133,18 @@ input[type="range"]::-moz-range-thumb {
     color: white;
 }
 
+/* User count display */
+.user-count {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    background: #007bff;
+    color: white;
+    text-align: center;
+    min-width: 80px;
+}
+
 /* Error messages */
 .error-message {
     position: fixed;
