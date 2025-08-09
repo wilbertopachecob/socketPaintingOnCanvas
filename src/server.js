@@ -31,11 +31,16 @@ app.use(morgan(NODE_ENV === 'development' ? 'dev' : 'combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static files - serve React build in production, public files in development
+// Static files - serve React build
 if (NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../dist')));
 } else {
-  app.use(express.static(path.join(__dirname, '../public')));
+  // In development, serve the React app via webpack dev server
+  // For static assets, serve from dist if available, otherwise skip
+  const distPath = path.join(__dirname, '../dist');
+  if (require('fs').existsSync(distPath)) {
+    app.use(express.static(distPath));
+  }
 }
 
 // Socket.IO handler
@@ -57,18 +62,19 @@ app.get('/users', (req, res) => {
 app.use('/api', routes);
 
 // Error handling middleware
-// eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
   console.error('Error:', err.stack);
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
 // Serve React app for all non-API routes
 app.get('*', (req, res) => {
-  if (NODE_ENV === 'production') {
-    res.sendFile(path.join(__dirname, '../dist/index.html'));
+  const indexPath = path.join(__dirname, '../dist/index.html');
+  if (require('fs').existsSync(indexPath)) {
+    res.sendFile(indexPath);
   } else {
-    res.sendFile(path.join(__dirname, '../public/index.html'));
+    // Fallback for development when dist doesn't exist
+    res.status(503).send('React app not built. Run npm run build first.');
   }
 });
 

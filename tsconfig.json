@@ -25,7 +25,8 @@
     }
   },
   "include": [
-    "client/**/*"
+    "client/**/*",
+    "tests/**/*"
   ],
   "exclude": [
     "node_modules",

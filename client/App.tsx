@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Canvas } from '@/components/Canvas';
 import { Controls } from '@/components/Controls';
 import { ErrorMessage } from '@/components/ErrorMessage';
 import { useSocket } from '@/hooks/useSocket';
-import { useCanvas } from '@/hooks/useCanvas';
 import { CanvasControls } from '@/types';
 import '@/App.css';
 
@@ -14,8 +13,7 @@ const App: React.FC = () => {
     strokeColor: '#000000'
   });
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
-  
-  const { clearCanvas } = useCanvas(socket, controls);
+  const clearCanvasRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     if (!socket) return;
@@ -36,7 +34,9 @@ const App: React.FC = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'c' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
-        clearCanvas();
+        if (clearCanvasRef.current) {
+          clearCanvasRef.current();
+        }
       }
     };
 
@@ -45,7 +45,7 @@ const App: React.FC = () => {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [clearCanvas]);
+  }, []);
 
   const removeErrorMessage = (index: number) => {
     setErrorMessages(prev => prev.filter((_, i) => i !== index));
@@ -53,12 +53,18 @@ const App: React.FC = () => {
 
   return (
     <div className="app">
-      <Canvas socket={socket} controls={controls} />
+      <Canvas 
+        socket={socket} 
+        controls={controls} 
+        onClearCanvasReady={(clearFn) => {
+          clearCanvasRef.current = clearFn;
+        }}
+      />
       
       <Controls
         controls={controls}
         onControlsChange={setControls}
-        onClearCanvas={clearCanvas}
+        onClearCanvas={() => clearCanvasRef.current?.()}
         isConnected={isConnected}
         userCount={userCount}
         connectionError={connectionError}

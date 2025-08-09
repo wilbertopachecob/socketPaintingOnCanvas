@@ -84,6 +84,12 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
+# Build output
+dist/
+
+# Log files and directories
+logs/
+
 ### Windows ###
 # Windows thumbnail cache files
 Thumbs.db

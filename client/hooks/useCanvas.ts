@@ -29,6 +29,8 @@ export const useCanvas = (socket: Socket | null, controls: CanvasControls) => {
     const context = canvas.getContext('2d');
     if (!context) return;
 
+    // Draw line from position 0 (previous) to position 1 (current)
+    // Line format: [from_position, to_position]
     context.beginPath();
     context.moveTo(line[0].x * canvas.width, line[0].y * canvas.height);
     context.lineTo(line[1].x * canvas.width, line[1].y * canvas.height);
@@ -175,28 +177,52 @@ export const useCanvas = (socket: Socket | null, controls: CanvasControls) => {
     };
   }, [getRelativePos]);
 
-  // Drawing loop
+  // Drawing loop with throttled emissions
   useEffect(() => {
     if (!socket) return;
 
+    let animationId: number;
+    let isActive = true;
+    let lastEmissionTime = 0;
+    const EMISSION_THROTTLE_MS = 16; // ~60 FPS, adjust as needed (16ms = ~60fps, 33ms = ~30fps)
+
     const drawingLoop = () => {
+      if (!isActive) return;
+      
       const mouse = mouseRef.current;
+      const now = Date.now();
+      
       if (mouse.click && mouse.move && mouse.pos_prev) {
-        socket.emit('draw_line', { 
-          line: [mouse.pos_prev, mouse.pos] 
-        });
+        // Draw locally immediately for smooth experience
+        const line: [{ x: number; y: number }, { x: number; y: number }] = [mouse.pos_prev, mouse.pos];
+        drawLine(line);
+        
+        // Throttle socket emissions to reduce network traffic
+        if (now - lastEmissionTime >= EMISSION_THROTTLE_MS) {
+          socket.emit('draw_line', { 
+            line: [mouse.pos_prev, mouse.pos] 
+          });
+          lastEmissionTime = now;
+        }
+        
         mouse.move = false;
       }
       mouse.pos_prev = { ...mouse.pos };
-      requestAnimationFrame(drawingLoop);
+      
+      if (isActive) {
+        animationId = requestAnimationFrame(drawingLoop);
+      }
     };
 
-    const animationId = requestAnimationFrame(drawingLoop);
+    animationId = requestAnimationFrame(drawingLoop);
 
     return () => {
-      cancelAnimationFrame(animationId);
+      isActive = false;
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
     };
-  }, [socket]);
+  }, [socket, drawLine]);
 
   const emitClearCanvas = useCallback(() => {
     if (socket) {
