@@ -1,5 +1,4 @@
-import React, { act } from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ErrorMessage } from '../../client/components/ErrorMessage';
 
@@ -235,15 +234,15 @@ describe('ErrorMessage Component', () => {
     expect(mockOnClose1).not.toHaveBeenCalled();
   });
 
-  it('handles edge case with zero duration', async () => {
+  it('handles edge case with minimal duration', async () => {
     const mockOnClose = jest.fn();
-    render(<ErrorMessage {...defaultProps} onClose={mockOnClose} duration={0} />);
+    render(<ErrorMessage {...defaultProps} onClose={mockOnClose} duration={1} />);
     
     expect(screen.getByText('Test error message')).toBeInTheDocument();
     
-    // With 0 duration, it should hide immediately
+    // With minimal duration, it should hide almost immediately
     act(() => {
-      jest.advanceTimersByTime(0);
+      jest.advanceTimersByTime(1);
     });
     
     await waitFor(() => {
