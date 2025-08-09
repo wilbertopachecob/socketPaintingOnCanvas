@@ -189,7 +189,7 @@ export const useCanvas = (socket: Socket | null, controls: CanvasControls) => {
       
       const mouse = mouseRef.current;
       if (mouse.click && mouse.move && mouse.pos_prev) {
-        // Emit line data with correct order: [from_position, to_position]
+        // Emit line data: [previous_position, current_position]
         // This draws FROM the previous position TO the current position
         socket.emit('draw_line', { 
           line: [mouse.pos_prev, mouse.pos] 

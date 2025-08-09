@@ -160,16 +160,23 @@ describe('ErrorMessage Component', () => {
     expect(errorElement).toHaveClass('error-message');
   });
 
-  it('applies correct button styles', () => {
+  it('applies correct button CSS class', () => {
     const mockOnClose = jest.fn();
     render(<ErrorMessage {...defaultProps} onClose={mockOnClose} />);
     
     const closeButton = screen.getByRole('button');
-    // Test individual style properties that we explicitly set
-    expect(closeButton).toHaveStyle('background: none');
-    expect(closeButton).toHaveStyle('color: white');
-    expect(closeButton).toHaveStyle('margin-left: 10px');
-    expect(closeButton).toHaveStyle('cursor: pointer');
+    expect(closeButton).toHaveClass('error-message-close');
+  });
+
+  it('button has appropriate accessibility attributes', () => {
+    const mockOnClose = jest.fn();
+    render(<ErrorMessage {...defaultProps} onClose={mockOnClose} />);
+    
+    const closeButton = screen.getByRole('button');
+    expect(closeButton).toHaveTextContent('×');
+    expect(closeButton).toBeEnabled();
+    expect(closeButton).toHaveAttribute('type', 'button');
+    expect(closeButton).toHaveAttribute('aria-label', 'Close error message');
   });
 
   it('handles multiple error messages with different durations', async () => {

@@ -37,16 +37,12 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
       {message}
       {onClose && (
         <button 
+          type="button"
+          className="error-message-close"
+          aria-label="Close error message"
           onClick={() => {
             setIsVisible(false);
             onClose();
-          }}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: 'white',
-            marginLeft: '10px',
-            cursor: 'pointer'
           }}
         >
           ×

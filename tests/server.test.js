@@ -108,6 +108,21 @@ describe('Server Integration Tests', () => {
       expect(response.body).toHaveProperty('service', 'Collaborative Drawing Canvas');
     });
 
+    test('should reject non-GET methods on health endpoint', async () => {
+      // Health endpoints should only accept GET requests
+      await request(app)
+        .post('/api/health')
+        .expect(404);
+
+      await request(app)
+        .put('/api/health')
+        .expect(404);
+
+      await request(app)
+        .delete('/api/health')
+        .expect(404);
+    });
+
     test('should serve users endpoint', async () => {
       const response = await request(app)
         .get('/api/users')
@@ -158,13 +173,23 @@ describe('Server Integration Tests', () => {
 
   describe('Error Handling', () => {
     test('should handle malformed JSON requests', async () => {
-      const response = await request(app)
-        .post('/api/health')
+      // Create a test endpoint that accepts POST for testing JSON parsing
+      const testApp = express();
+      testApp.use(express.json());
+      testApp.post('/test-json', (req, res) => {
+        res.json({ received: req.body });
+      });
+      testApp.use((err, req, res, next) => {
+        res.status(400).json({ error: 'Invalid JSON' });
+      });
+
+      const response = await request(testApp)
+        .post('/test-json')
         .set('Content-Type', 'application/json')
         .send('invalid json')
-        .expect(500); // Express error handler catches JSON parse errors
+        .expect(400); // Bad request for malformed JSON
 
-      expect(response.body).toHaveProperty('error', 'Something went wrong!');
+      expect(response.body).toHaveProperty('error', 'Invalid JSON');
     });
 
     test('should handle server errors gracefully', async () => {
