@@ -1,17 +1,32 @@
 module.exports = {
-  testEnvironment: 'node',
-  roots: ['<rootDir>/tests'],
-  testMatch: [
-    '**/__tests__/**/*.js',
-    '**/?(*.)+(spec|test).js'
-  ],
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
+  setupFiles: ['<rootDir>/tests/polyfills.js'],
+  moduleNameMapper: {
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    '^@/(.*)$': '<rootDir>/client/$1',
+  },
   collectCoverageFrom: [
+    'client/**/*.{ts,tsx}',
     'src/**/*.js',
-    '!src/server.js' // Exclude server.js from coverage as it's mostly setup
+    '!client/**/*.d.ts',
+    '!src/server.js',
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
-  setupFilesAfterEnv: [],
-  testTimeout: 10000,
-  verbose: true
-}; 
+  testMatch: [
+    '<rootDir>/tests/**/*.(test|spec).{js,jsx,ts,tsx}'
+  ],
+  moduleFileExtensions: [
+    'js',
+    'jsx',
+    'ts',
+    'tsx',
+    'json',
+    'node'
+  ],
+  transform: {
+    '^.+\\.(ts|tsx)$': ['babel-jest', { presets: ['@babel/preset-typescript', ['@babel/preset-react', { runtime: 'automatic' }]] }],
+    '^.+\\.(js|jsx)$': 'babel-jest'
+  }
+};
