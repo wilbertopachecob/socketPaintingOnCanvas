@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 interface ErrorMessageProps {
   message: string;
@@ -14,19 +14,25 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
   duration = 5000
 }) => {
   const [isVisible, setIsVisible] = useState(true);
+  const onCloseRef = useRef(onClose);
+
+  // Keep the ref up to date
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   useEffect(() => {
     if (autoHide) {
       const timer = setTimeout(() => {
         setIsVisible(false);
-        if (onClose) {
-          onClose();
+        if (onCloseRef.current) {
+          onCloseRef.current();
         }
       }, duration);
 
       return () => clearTimeout(timer);
     }
-  }, [autoHide, duration, onClose]);
+  }, [autoHide, duration]);
 
   if (!isVisible) {
     return null;
@@ -42,7 +48,9 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
           aria-label="Close error message"
           onClick={() => {
             setIsVisible(false);
-            onClose();
+            if (onCloseRef.current) {
+              onCloseRef.current();
+            }
           }}
         >
           ×

@@ -252,4 +252,43 @@ describe('ErrorMessage Component', () => {
     
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
+
+  it('timer is not reset when parent re-renders with new onClose function', async () => {
+    const mockOnClose1 = jest.fn();
+    const mockOnClose2 = jest.fn();
+    const duration = 5000;
+    
+    const { rerender } = render(
+      <ErrorMessage message="Test error message" onClose={mockOnClose1} duration={duration} />
+    );
+    
+    expect(screen.getByText('Test error message')).toBeInTheDocument();
+    
+    // Fast-forward time by 3000ms
+    act(() => {
+      jest.advanceTimersByTime(3000);
+    });
+    
+    // Message should still be visible
+    expect(screen.getByText('Test error message')).toBeInTheDocument();
+    
+    // Re-render with a new onClose function (simulating parent re-render)
+    rerender(
+      <ErrorMessage message="Test error message" onClose={mockOnClose2} duration={duration} />
+    );
+    
+    // Fast-forward the remaining 2000ms (total 5000ms from initial render)
+    act(() => {
+      jest.advanceTimersByTime(2000);
+    });
+    
+    // Message should now be hidden and the new onClose should be called
+    await waitFor(() => {
+      expect(screen.queryByText('Test error message')).not.toBeInTheDocument();
+    });
+    
+    // The new onClose function should be called (not the old one)
+    expect(mockOnClose2).toHaveBeenCalledTimes(1);
+    expect(mockOnClose1).not.toHaveBeenCalled();
+  });
 });

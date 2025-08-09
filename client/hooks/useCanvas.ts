@@ -177,23 +177,34 @@ export const useCanvas = (socket: Socket | null, controls: CanvasControls) => {
     };
   }, [getRelativePos]);
 
-  // Drawing loop
+  // Drawing loop with throttled emissions
   useEffect(() => {
     if (!socket) return;
 
     let animationId: number;
     let isActive = true;
+    let lastEmissionTime = 0;
+    const EMISSION_THROTTLE_MS = 16; // ~60 FPS, adjust as needed (16ms = ~60fps, 33ms = ~30fps)
 
     const drawingLoop = () => {
       if (!isActive) return;
       
       const mouse = mouseRef.current;
+      const now = Date.now();
+      
       if (mouse.click && mouse.move && mouse.pos_prev) {
-        // Emit line data: [previous_position, current_position]
-        // This draws FROM the previous position TO the current position
-        socket.emit('draw_line', { 
-          line: [mouse.pos_prev, mouse.pos] 
-        });
+        // Draw locally immediately for smooth experience
+        const line: [{ x: number; y: number }, { x: number; y: number }] = [mouse.pos_prev, mouse.pos];
+        drawLine(line);
+        
+        // Throttle socket emissions to reduce network traffic
+        if (now - lastEmissionTime >= EMISSION_THROTTLE_MS) {
+          socket.emit('draw_line', { 
+            line: [mouse.pos_prev, mouse.pos] 
+          });
+          lastEmissionTime = now;
+        }
+        
         mouse.move = false;
       }
       mouse.pos_prev = { ...mouse.pos };
@@ -211,7 +222,7 @@ export const useCanvas = (socket: Socket | null, controls: CanvasControls) => {
         cancelAnimationFrame(animationId);
       }
     };
-  }, [socket]);
+  }, [socket, drawLine]);
 
   const emitClearCanvas = useCallback(() => {
     if (socket) {
