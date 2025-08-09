@@ -2,6 +2,10 @@
 
 A real-time collaborative drawing application built with Node.js, Express, and Socket.IO. Multiple users can draw together on a shared canvas in real-time.
 
+## Live Demo
+
+Try it here: [paint.wilbertopachecob.dev](https://paint.wilbertopachecob.dev/)
+
 ## Features
 
 - **Real-time Collaboration**: Multiple users can draw simultaneously
