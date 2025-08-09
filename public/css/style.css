@@ -190,24 +190,60 @@ input[type="range"]::-moz-range-thumb {
     margin-bottom: 10px;
 }
 
+/* Controls header and toggle */
+.controls-header {
+    display: none;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+
+.btn-toggle {
+    background: #f8f9fa;
+    border: 2px solid #dee2e6;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 30px;
+}
+
+.btn-toggle:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.toggle-icon {
+    line-height: 1;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
     .controls {
         top: 10px;
         left: 10px;
-        right: 10px;
-        min-width: auto;
-        padding: 15px;
+        right: auto; /* don't stretch full width on mobile */
+        min-width: 0;
+        width: min(85vw, 320px); /* keep compact */
+        max-height: 55vh; /* avoid covering too much canvas */
+        overflow: auto; /* scroll if content grows */
+        padding: 12px;
+    }
+    
+    .controls-header {
+        display: flex;
     }
     
     .control-group {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 5px;
+        align-items: stretch;
+        gap: 6px;
     }
     
     .control-group label {
         min-width: auto;
+        font-size: 14px;
     }
     
     input[type="range"] {
