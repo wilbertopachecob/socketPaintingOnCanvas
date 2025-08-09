@@ -36,7 +36,7 @@ const createTestApp = () => {
   app.use('/api', routes);
   
   // Error handling middleware
-  app.use((err, req, res, next) => {
+  app.use((err, _req, res, _next) => {
     res.status(500).json({ error: 'Something went wrong!' });
   });
   
@@ -128,7 +128,7 @@ describe('Server Integration Tests', () => {
     });
 
     test('should return 404 for non-existent API routes', async () => {
-      const response = await request(app)
+      await request(app)
         .get('/api/non-existent')
         .expect((res) => {
           // May return 200 (served by React app) or should handle gracefully
@@ -174,7 +174,7 @@ describe('Server Integration Tests', () => {
       testApp.post('/test-json', (req, res) => {
         res.json({ received: req.body });
       });
-      testApp.use((err, req, res, next) => {
+      testApp.use((err, _req, res, _next) => {
         res.status(400).json({ error: 'Invalid JSON' });
       });
 
@@ -190,11 +190,11 @@ describe('Server Integration Tests', () => {
     test('should handle server errors gracefully', async () => {
       // Create an app with a route that throws an error
       const errorApp = express();
-      errorApp.get('/error', (req, res, next) => {
+      errorApp.get('/error', (_req, _res, _next) => {
         throw new Error('Test error');
       });
       
-      errorApp.use((err, req, res, next) => {
+      errorApp.use((err, _req, res, _next) => {
         res.status(500).json({ error: 'Something went wrong!' });
       });
 
