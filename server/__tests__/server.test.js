@@ -1,7 +1,7 @@
 const request = require('supertest');
 const express = require('express');
 const path = require('path');
-const routes = require('../src/routes');
+const routes = require('../routes');
 
 // Create a comprehensive test app that mimics the real server
 const createTestApp = () => {

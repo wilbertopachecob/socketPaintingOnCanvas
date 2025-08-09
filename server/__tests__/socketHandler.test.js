@@ -1,5 +1,5 @@
-const SocketHandler = require('../src/socket/socketHandler');
-const DrawingManager = require('../src/socket/drawingManager');
+const SocketHandler = require('../socket/socketHandler');
+const DrawingManager = require('../socket/drawingManager');
 
 // Mock Socket.IO
 const mockIo = {

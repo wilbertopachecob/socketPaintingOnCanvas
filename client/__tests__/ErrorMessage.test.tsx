@@ -1,6 +1,6 @@
 import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ErrorMessage } from '../../client/components/ErrorMessage';
+import { ErrorMessage } from '@/components/ErrorMessage';
 
 describe('ErrorMessage Component', () => {
   const defaultProps = {

@@ -2,19 +2,23 @@
   "name": "paintingoncanvas",
   "version": "1.0.0",
   "description": "Real-time collaborative painting canvas with Node.js and Socket.IO",
-  "main": "src/server.js",
+  "main": "server/server.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js",
     "build": "npm run build:client && npm run build:server",
     "build:client": "webpack --mode production",
     "build:server": "echo 'Server build complete'",
     "dev:client": "webpack serve --mode development",
     "test": "jest",
+    "test:client": "jest --selectProjects client",
+    "test:server": "jest --selectProjects server",
     "test:watch": "jest --watch",
+    "test:watch:client": "jest --selectProjects client --watch",
+    "test:watch:server": "jest --selectProjects server --watch",
     "test:coverage": "jest --coverage",
-    "lint": "eslint src/ client/",
-    "lint:fix": "eslint src/ client/ --fix"
+    "lint": "eslint server/ client/",
+    "lint:fix": "eslint server/ client/ --fix"
   },
   "author": "Wilberto Pacheco Batista",
   "license": "MIT",
@@ -28,6 +32,7 @@
     "socket.io-client": "^4.7.4"
   },
   "devDependencies": {
+    "@babel/plugin-syntax-jsx": "^7.27.1",
     "@babel/preset-env": "^7.23.6",
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
