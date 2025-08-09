@@ -23,7 +23,7 @@ check_port() {
     local service=$2
     if lsof -i :$port > /dev/null 2>&1; then
         echo "⚠️  Port $port is already in use by $service"
-        echo "   Run ./stop-app.sh first to stop existing processes"
+        echo "   Run ./scripts/stop-app.sh first to stop existing processes"
         return 1
     fi
     return 0
@@ -112,6 +112,6 @@ echo "📝 Logs:"
 echo "   Backend:  tail -f logs/backend.log"
 echo "   Frontend: tail -f logs/frontend.log"
 echo ""
-echo "🛑 To stop the application, run: ./stop-app.sh"
+echo "🛑 To stop the application, run: ./scripts/stop-app.sh"
 echo ""
 echo "✨ Happy coding! The React drawing app is ready to use."

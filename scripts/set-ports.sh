@@ -119,8 +119,8 @@ if [ $# -eq 0 ]; then
     show_current_config
     
     echo "💡 To apply the new configuration:"
-    echo "   1. Run: ./stop-app.sh (if running)"
-    echo "   2. Run: ./start-app.sh"
+    echo "   1. Run: ./scripts/stop-app.sh (if running)"
+    echo "   2. Run: ./scripts/start-app.sh"
     
 # Command line mode
 elif [ $# -eq 2 ]; then

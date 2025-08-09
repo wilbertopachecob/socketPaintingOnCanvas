@@ -106,4 +106,4 @@ fi
 echo ""
 echo "🎯 Application stopped successfully!"
 echo ""
-echo "🚀 To start the application again, run: ./start-app.sh"
+echo "🚀 To start the application again, run: ./scripts/start-app.sh"
