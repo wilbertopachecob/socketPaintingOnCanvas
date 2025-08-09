@@ -1,6 +1,6 @@
 const request = require('supertest');
 const express = require('express');
-const routes = require('../../src/routes');
+const routes = require('../../routes');
 
 describe('API Routes - Index', () => {
   let app;

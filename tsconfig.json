@@ -17,7 +17,6 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": false,
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
@@ -25,12 +24,12 @@
     }
   },
   "include": [
-    "client/**/*",
-    "tests/**/*"
+    "client/**/*"
   ],
   "exclude": [
     "node_modules",
     "dist",
-    "src"
+    "server",
+    "coverage"
   ]
 }

@@ -62,7 +62,7 @@ app.get('/users', (req, res) => {
 app.use('/api', routes);
 
 // Error handling middleware
-app.use((err, req, res, _next) => {
+app.use((err, _req, res, _next) => {
   console.error('Error:', err.stack);
   res.status(500).json({ error: 'Something went wrong!' });
 });

@@ -1,0 +1,17 @@
+{
+  "name": "@paintingoncanvas/client",
+  "version": "1.0.0",
+  "description": "React client for Socket Painting Canvas",
+  "private": true,
+  "scripts": {
+    "test": "jest --selectProjects client",
+    "test:watch": "jest --selectProjects client --watch",
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "socket.io-client": "^4.7.4"
+  }
+}

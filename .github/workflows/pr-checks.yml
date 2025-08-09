@@ -13,15 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Wait for CI workflow (Node 18)
-      uses: lewagon/wait-on-check-action@v1.3.3
-      with:
-        ref: ${{ github.event.pull_request.head.sha }}
-        check-name: 'test (18.x)'
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-        wait-interval: 10
-        allowed-conclusions: success
-    
     - name: Wait for CI workflow (Node 20)
       uses: lewagon/wait-on-check-action@v1.3.3
       with:

@@ -83,7 +83,7 @@ describe('useCanvas Hook', () => {
 
     // Mock requestAnimationFrame and cancelAnimationFrame with controllable execution
     let animationId = 1;
-    let pendingCallbacks: { id: number; callback: FrameRequestCallback }[] = [];
+    let pendingCallbacks: { id: number; callback: (time: number) => void }[] = [];
     
     global.requestAnimationFrame = jest.fn((callback) => {
       const id = animationId++;
@@ -146,11 +146,11 @@ describe('useCanvas Hook', () => {
   };
 
   // Helper function to get event handlers from mock addEventListener calls
-  const getEventHandler = (eventType: string) => {
-    const calls = (mockCanvas.addEventListener as jest.Mock).mock.calls;
-    const eventCall = calls.find(call => call[0] === eventType);
-    return eventCall ? eventCall[1] : null;
-  };
+  // const getEventHandler = (eventType: string) => {
+  //   const calls = (mockCanvas.addEventListener as jest.Mock).mock.calls;
+  //   const eventCall = calls.find(call => call[0] === eventType);
+  //   return eventCall ? eventCall[1] : null;
+  // };
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -311,7 +311,7 @@ describe('useCanvas Hook', () => {
   });
 
   it('should not draw invalid lines', () => {
-    const { result } = renderUseCanvasWithCanvas(mockSocket, mockControls);
+    renderUseCanvasWithCanvas(mockSocket, mockControls);
     
     // Get the draw_line handler
     const drawLineHandler = mockSocket.on.mock.calls.find(
@@ -333,7 +333,7 @@ describe('useCanvas Hook', () => {
   });
 
   it('should start drawing loop with requestAnimationFrame', () => {
-    const { result } = renderUseCanvasWithCanvas(mockSocket, mockControls);
+    renderUseCanvasWithCanvas(mockSocket, mockControls);
     
     // The drawing loop should be started
     expect(global.requestAnimationFrame).toHaveBeenCalled();
@@ -362,7 +362,7 @@ describe('useCanvas Hook', () => {
 
   describe('Drawing Loop Behavior', () => {
     it('should continuously request animation frames for drawing loop', () => {
-      const { result } = renderUseCanvasWithCanvas(mockSocket, mockControls);
+      renderUseCanvasWithCanvas(mockSocket, mockControls);
       
       // Should have at least one animation frame pending for the drawing loop
       expect((global as any).getPendingAnimationFrameCount()).toBeGreaterThan(0);
@@ -377,7 +377,7 @@ describe('useCanvas Hook', () => {
     });
 
     it('should continue drawing loop until unmount', () => {
-      const { result, unmount } = renderUseCanvasWithCanvas(mockSocket, mockControls);
+      const { unmount } = renderUseCanvasWithCanvas(mockSocket, mockControls);
       
       // Initial animation frame should be requested
       expect((global as any).getPendingAnimationFrameCount()).toBeGreaterThan(0);
@@ -402,7 +402,7 @@ describe('useCanvas Hook', () => {
     });
 
     it('should call requestAnimationFrame with drawing loop function', () => {
-      const { result } = renderUseCanvasWithCanvas(mockSocket, mockControls);
+      renderUseCanvasWithCanvas(mockSocket, mockControls);
       
       // Verify that requestAnimationFrame was called with a function
       expect(global.requestAnimationFrame).toHaveBeenCalledWith(expect.any(Function));
@@ -413,7 +413,7 @@ describe('useCanvas Hook', () => {
     });
 
     it('should handle animation frame execution without errors', () => {
-      const { result } = renderUseCanvasWithCanvas(mockSocket, mockControls);
+      renderUseCanvasWithCanvas(mockSocket, mockControls);
       
       // Execute animation frames multiple times to test loop stability
       expect(() => {
@@ -433,7 +433,7 @@ describe('useCanvas Hook', () => {
     });
 
     it('should not start drawing loop when socket is null', () => {
-      const { result } = renderUseCanvasWithCanvas(null, mockControls);
+      renderUseCanvasWithCanvas(null, mockControls);
       
       // When socket is null, the drawing loop effect should not start
       // The animation frame count should be 0 since no drawing loop was started

@@ -1,6 +1,6 @@
 const request = require('supertest');
 const express = require('express');
-const healthRoutes = require('../../src/routes/health');
+const healthRoutes = require('../../routes/health');
 
 describe('Health Routes', () => {
   let app;

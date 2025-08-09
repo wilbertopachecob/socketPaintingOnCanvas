@@ -1,6 +1,6 @@
 const request = require('supertest');
 const express = require('express');
-const userRoutes = require('../../src/routes/users');
+const userRoutes = require('../../routes/users');
 
 describe('User Routes', () => {
   let app;

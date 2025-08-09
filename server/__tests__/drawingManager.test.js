@@ -1,4 +1,4 @@
-const DrawingManager = require('../src/socket/drawingManager');
+const DrawingManager = require('../socket/drawingManager');
 
 describe('DrawingManager', () => {
   let drawingManager;

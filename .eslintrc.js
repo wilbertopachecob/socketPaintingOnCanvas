@@ -14,7 +14,7 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
-    'no-unused-vars': 'warn',
+    'no-unused-vars': ['warn', { 'argsIgnorePattern': '^_' }],
     'no-console': 'off',
     'prefer-const': 'error',
     'no-var': 'error',
@@ -42,7 +42,7 @@ module.exports = {
       },
       rules: {
         'no-unused-vars': 'off', // Turn off base rule
-        '@typescript-eslint/no-unused-vars': 'warn',
+        '@typescript-eslint/no-unused-vars': ['warn', { 'argsIgnorePattern': '^_' }],
         'react/react-in-jsx-scope': 'off', // Not needed with React 17+
         'react/prop-types': 'off', // Using TypeScript for prop validation
       },

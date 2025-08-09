@@ -46,7 +46,6 @@ describe('Controls Component', () => {
   });
 
   it('calls onControlsChange when line width changes', async () => {
-    const user = userEvent.setup();
     render(<Controls {...mockProps} />);
     
     const lineWidthSlider = screen.getByLabelText('Line Width:') as HTMLInputElement;
