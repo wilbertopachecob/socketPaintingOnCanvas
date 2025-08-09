@@ -1,6 +1,10 @@
+const path = require('path');
+
+// Load environment variables
+require('dotenv').config({ path: path.join(__dirname, '../config.env') });
+
 const express = require('express');
 const morgan = require('morgan');
-const path = require('path');
 const http = require('http');
 const socketIO = require('socket.io');
 const socketHandler = require('./socket/socketHandler');
@@ -9,7 +13,14 @@ const routes = require('./routes');
 // Initialize express app
 const app = express();
 const server = http.createServer(app);
-const io = socketIO(server);
+
+// Socket.IO configuration with CORS
+const io = socketIO(server, {
+  cors: {
+    origin: process.env.SOCKET_CORS_ORIGIN || "http://localhost:3001",
+    methods: ["GET", "POST"]
+  }
+});
 
 // Configuration
 const PORT = process.env.PORT || 3000;

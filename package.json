@@ -19,6 +19,7 @@
   "author": "Wilberto Pacheco Batista",
   "license": "MIT",
   "dependencies": {
+    "dotenv": "^17.2.1",
     "express": "^4.18.2",
     "morgan": "^1.10.0",
     "react": "^18.2.0",

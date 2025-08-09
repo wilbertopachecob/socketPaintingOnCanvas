@@ -1,8 +1,13 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+// Load environment variables
+require('dotenv').config({ path: path.join(__dirname, 'config.env') });
+
 module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
+  const CLIENT_PORT = process.env.CLIENT_PORT || 3001;
+  const SERVER_PORT = process.env.PORT || 3000;
   
   return {
     entry: './client/index.tsx',
@@ -41,11 +46,11 @@ module.exports = (env, argv) => {
         directory: path.join(__dirname, 'dist'),
       },
       compress: true,
-      port: 3001,
+      port: CLIENT_PORT,
       proxy: [
         {
           context: ['/socket.io'],
-          target: 'http://localhost:3000',
+          target: `http://localhost:${SERVER_PORT}`,
           ws: true,
         },
       ],
