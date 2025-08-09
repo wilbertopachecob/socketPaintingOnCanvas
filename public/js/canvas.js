@@ -30,28 +30,40 @@ class Canvas {
   setupEventListeners() {
     // Mouse events
     this.canvas.addEventListener('mousedown', (e) => {
+      const rect = this.canvas.getBoundingClientRect();
+      this.mouse.pos.x = (e.clientX - rect.left) / this.canvas.width;
+      this.mouse.pos.y = (e.clientY - rect.top) / this.canvas.height;
+      this.mouse.pos_prev = { x: this.mouse.pos.x, y: this.mouse.pos.y };
       this.mouse.click = true;
     });
 
     this.canvas.addEventListener('mouseup', () => {
       this.mouse.click = false;
+      this.mouse.pos_prev = false;
     });
 
     this.canvas.addEventListener('mousemove', (e) => {
-      this.mouse.pos.x = e.clientX / this.canvas.width;
-      this.mouse.pos.y = e.clientY / this.canvas.height;
+      const rect = this.canvas.getBoundingClientRect();
+      this.mouse.pos.x = (e.clientX - rect.left) / this.canvas.width;
+      this.mouse.pos.y = (e.clientY - rect.top) / this.canvas.height;
       this.mouse.move = true;
     });
 
     // Touch events for mobile
     this.canvas.addEventListener('touchstart', (e) => {
       e.preventDefault();
+      const touch = e.touches[0];
+      const rect = this.canvas.getBoundingClientRect();
+      this.mouse.pos.x = (touch.clientX - rect.left) / this.canvas.width;
+      this.mouse.pos.y = (touch.clientY - rect.top) / this.canvas.height;
+      this.mouse.pos_prev = { x: this.mouse.pos.x, y: this.mouse.pos.y };
       this.mouse.click = true;
     });
 
     this.canvas.addEventListener('touchend', (e) => {
       e.preventDefault();
       this.mouse.click = false;
+      this.mouse.pos_prev = false;
     });
 
     this.canvas.addEventListener('touchmove', (e) => {
@@ -100,7 +112,7 @@ class Canvas {
     const mainLoop = () => {
       if (this.mouse.click && this.mouse.move && this.mouse.pos_prev) {
         this.socket.emit('draw_line', { 
-          line: [this.mouse.pos, this.mouse.pos_prev] 
+          line: [this.mouse.pos_prev, this.mouse.pos] 
         });
         this.mouse.move = false;
       }

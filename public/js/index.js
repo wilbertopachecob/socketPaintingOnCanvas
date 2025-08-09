@@ -74,23 +74,30 @@ class DrawingApp {
     controlsContainer.className = 'controls';
 
     controlsContainer.innerHTML = `
-      <div class="control-group">
-        <button id="clear-btn" class="btn btn-clear">Clear Canvas</button>
+      <div class="controls-header">
+        <button id="toggle-controls" class="btn btn-toggle" aria-label="Toggle controls">
+          <span class="toggle-icon">−</span>
+        </button>
       </div>
-      <div class="control-group">
-        <label for="color-picker">Color:</label>
-        <input type="color" id="color-picker" value="#000000">
-      </div>
-      <div class="control-group">
-        <label for="line-width-slider">Line Width:</label>
-        <input type="range" id="line-width-slider" min="1" max="20" value="2">
-        <span id="line-width-display">2px</span>
-      </div>
-      <div class="control-group">
-        <span id="connection-status" class="status-indicator">Connecting...</span>
-      </div>
-      <div class="control-group">
-        <span id="user-count" class="user-count">Users: 0/10</span>
+      <div id="controls-content" class="controls-content">
+        <div class="control-group">
+          <button id="clear-btn" class="btn btn-clear">Clear Canvas</button>
+        </div>
+        <div class="control-group">
+          <label for="color-picker">Color:</label>
+          <input type="color" id="color-picker" value="#000000">
+        </div>
+        <div class="control-group">
+          <label for="line-width-slider">Line Width:</label>
+          <input type="range" id="line-width-slider" min="1" max="20" value="2">
+          <span id="line-width-display">2px</span>
+        </div>
+        <div class="control-group">
+          <span id="connection-status" class="status-indicator">Connecting...</span>
+        </div>
+        <div class="control-group">
+          <span id="user-count" class="user-count">Users: 0/10</span>
+        </div>
       </div>
     `;
 
@@ -103,7 +110,10 @@ class DrawingApp {
       lineWidthSlider: document.querySelector('#line-width-slider'),
       lineWidthDisplay: document.querySelector('#line-width-display'),
       connectionStatus: document.querySelector('#connection-status'),
-      userCount: document.querySelector('#user-count')
+      userCount: document.querySelector('#user-count'),
+      toggleBtn: document.querySelector('#toggle-controls'),
+      controlsContent: document.querySelector('#controls-content'),
+      toggleIcon: document.querySelector('.toggle-icon')
     };
   }
 
@@ -130,6 +140,13 @@ class DrawingApp {
       });
     }
 
+    // Toggle controls collapse/expand
+    if (this.controls.toggleBtn) {
+      this.controls.toggleBtn.addEventListener('click', () => {
+        this.toggleControls();
+      });
+    }
+
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
       if (e.key === 'c' && (e.ctrlKey || e.metaKey)) {
@@ -149,6 +166,20 @@ class DrawingApp {
   updateUserCount(currentUsers, maxUsers) {
     if (this.controls.userCount) {
       this.controls.userCount.textContent = `Users: ${currentUsers}/${maxUsers}`;
+    }
+  }
+
+  toggleControls() {
+    if (this.controls.controlsContent && this.controls.toggleIcon) {
+      const isCollapsed = this.controls.controlsContent.style.display === 'none';
+      
+      if (isCollapsed) {
+        this.controls.controlsContent.style.display = 'block';
+        this.controls.toggleIcon.textContent = '−';
+      } else {
+        this.controls.controlsContent.style.display = 'none';
+        this.controls.toggleIcon.textContent = '+';
+      }
     }
   }
 
