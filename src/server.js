@@ -1,6 +1,10 @@
+const path = require('path');
+
+// Load environment variables
+require('dotenv').config({ path: path.join(__dirname, '../config.env') });
+
 const express = require('express');
 const morgan = require('morgan');
-const path = require('path');
 const http = require('http');
 const socketIO = require('socket.io');
 const socketHandler = require('./socket/socketHandler');
@@ -9,7 +13,14 @@ const routes = require('./routes');
 // Initialize express app
 const app = express();
 const server = http.createServer(app);
-const io = socketIO(server);
+
+// Socket.IO configuration with CORS
+const io = socketIO(server, {
+  cors: {
+    origin: process.env.SOCKET_CORS_ORIGIN || "http://localhost:3001",
+    methods: ["GET", "POST"]
+  }
+});
 
 // Configuration
 const PORT = process.env.PORT || 3000;
@@ -20,8 +31,12 @@ app.use(morgan(NODE_ENV === 'development' ? 'dev' : 'combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static files
-app.use(express.static(path.join(__dirname, '../public')));
+// Static files - serve React build in production, public files in development
+if (NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../dist')));
+} else {
+  app.use(express.static(path.join(__dirname, '../public')));
+}
 
 // Socket.IO handler
 const socketHandlerInstance = socketHandler(io);
@@ -42,14 +57,24 @@ app.get('/users', (req, res) => {
 app.use('/api', routes);
 
 // Error handling middleware
+// eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   console.error('Error:', err.stack);
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ error: 'Route not found' });
+// Serve React app for all non-API routes
+app.get('*', (req, res) => {
+  if (NODE_ENV === 'production') {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
+  } else {
+    res.sendFile(path.join(__dirname, '../public/index.html'));
+  }
+});
+
+// 404 handler for API routes only
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ error: 'API route not found' });
 });
 
 // Start server
