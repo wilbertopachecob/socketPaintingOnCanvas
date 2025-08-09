@@ -20,8 +20,12 @@ app.use(morgan(NODE_ENV === 'development' ? 'dev' : 'combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static files
-app.use(express.static(path.join(__dirname, '../public')));
+// Static files - serve React build in production, public files in development
+if (NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../dist')));
+} else {
+  app.use(express.static(path.join(__dirname, '../public')));
+}
 
 // Socket.IO handler
 const socketHandlerInstance = socketHandler(io);
@@ -42,14 +46,23 @@ app.get('/users', (req, res) => {
 app.use('/api', routes);
 
 // Error handling middleware
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   console.error('Error:', err.stack);
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ error: 'Route not found' });
+// Serve React app for all non-API routes
+app.get('*', (req, res) => {
+  if (NODE_ENV === 'production') {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
+  } else {
+    res.sendFile(path.join(__dirname, '../public/index.html'));
+  }
+});
+
+// 404 handler for API routes only
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ error: 'API route not found' });
 });
 
 // Start server
