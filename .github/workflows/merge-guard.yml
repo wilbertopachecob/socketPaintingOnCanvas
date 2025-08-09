@@ -39,7 +39,7 @@ jobs:
         script: |
           const pr_number = github.event_name === 'pull_request' 
             ? github.event.pull_request.number 
-            : steps.pr.outputs.result;
+            : '${{ steps.pr.outputs.result }}';
           
           if (!pr_number) {
             console.log('No PR found for this workflow run');
