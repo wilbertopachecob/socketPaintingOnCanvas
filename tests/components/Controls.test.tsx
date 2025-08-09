@@ -47,9 +47,10 @@ describe('Controls Component', () => {
     const user = userEvent.setup();
     render(<Controls {...mockProps} />);
     
-    const lineWidthSlider = screen.getByLabelText('Line Width:');
-    await user.clear(lineWidthSlider);
-    await user.type(lineWidthSlider, '5');
+    const lineWidthSlider = screen.getByLabelText('Line Width:') as HTMLInputElement;
+    
+    // Simulate range input change
+    fireEvent.change(lineWidthSlider, { target: { value: '5' } });
     
     expect(mockProps.onControlsChange).toHaveBeenCalledWith({
       ...mockControls,

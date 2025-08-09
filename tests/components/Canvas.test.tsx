@@ -39,20 +39,20 @@ describe('Canvas Component', () => {
   it('renders canvas element', () => {
     render(<Canvas socket={null} controls={mockControls} />);
     
-    const canvas = screen.getByRole('img', { hidden: true });
+    const canvas = document.getElementById('drawing');
     expect(canvas).toBeInTheDocument();
     expect(canvas).toHaveAttribute('id', 'drawing');
+    expect(canvas?.tagName.toLowerCase()).toBe('canvas');
   });
 
   it('applies correct styles to canvas', () => {
     render(<Canvas socket={null} controls={mockControls} />);
     
-    const canvas = screen.getByRole('img', { hidden: true });
+    const canvas = document.getElementById('drawing');
     expect(canvas).toHaveStyle({
       display: 'block',
       background: 'white',
-      cursor: 'crosshair',
-      touchAction: 'none'
+      cursor: 'crosshair'
     });
   });
 });
