@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run linter
+      run: npm run lint
+    
+    - name: Run tests
+      run: npm test
+    
+    - name: Build application
+      run: npm run build
+    
+    - name: Upload coverage to Codecov (Node 20 only)
+      if: matrix.node-version == '20.x'
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage/lcov.info
+        fail_ci_if_error: false
+
+  # Separate job for checking if PR is up to date with base branch
+  branch-check:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Check if PR is up to date with base branch
+      run: |
+        git fetch origin ${{ github.base_ref }}
+        BEHIND_COUNT=$(git rev-list --count HEAD..origin/${{ github.base_ref }})
+        if [ $BEHIND_COUNT -gt 0 ]; then
+          echo "❌ PR is $BEHIND_COUNT commits behind ${{ github.base_ref }}"
+          echo "Please update your branch with the latest changes from ${{ github.base_ref }}"
+          exit 1
+        else
+          echo "✅ PR is up to date with ${{ github.base_ref }}"
+        fi
