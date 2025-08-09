@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { act } from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Controls } from '@/components/Controls';
@@ -38,7 +38,9 @@ describe('Controls Component', () => {
     render(<Controls {...mockProps} />);
     
     const clearButton = screen.getByText('Clear Canvas');
-    await user.click(clearButton);
+    await act(async () => {
+      await user.click(clearButton);
+    });
     
     expect(mockProps.onClearCanvas).toHaveBeenCalledTimes(1);
   });
@@ -50,7 +52,9 @@ describe('Controls Component', () => {
     const lineWidthSlider = screen.getByLabelText('Line Width:') as HTMLInputElement;
     
     // Simulate range input change
-    fireEvent.change(lineWidthSlider, { target: { value: '5' } });
+    act(() => {
+      fireEvent.change(lineWidthSlider, { target: { value: '5' } });
+    });
     
     expect(mockProps.onControlsChange).toHaveBeenCalledWith({
       ...mockControls,
@@ -63,8 +67,12 @@ describe('Controls Component', () => {
     render(<Controls {...mockProps} />);
     
     const colorPicker = screen.getByLabelText('Color:');
-    await user.click(colorPicker);
-    fireEvent.change(colorPicker, { target: { value: '#ff0000' } });
+    await act(async () => {
+      await user.click(colorPicker);
+    });
+    act(() => {
+      fireEvent.change(colorPicker, { target: { value: '#ff0000' } });
+    });
     
     expect(mockProps.onControlsChange).toHaveBeenCalledWith({
       ...mockControls,
@@ -94,10 +102,14 @@ describe('Controls Component', () => {
     
     expect(controlsContent).toHaveStyle({ display: 'block' });
     
-    await user.click(toggleButton);
+    await act(async () => {
+      await user.click(toggleButton);
+    });
     expect(controlsContent).toHaveStyle({ display: 'none' });
     
-    await user.click(toggleButton);
+    await act(async () => {
+      await user.click(toggleButton);
+    });
     expect(controlsContent).toHaveStyle({ display: 'block' });
   });
 });

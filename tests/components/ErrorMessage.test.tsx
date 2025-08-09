@@ -1,5 +1,5 @@
-import React from 'react';
-import { render, screen, waitFor, act } from '@testing-library/react';
+import React, { act } from 'react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ErrorMessage } from '../../client/components/ErrorMessage';
 
@@ -50,7 +50,9 @@ describe('ErrorMessage Component', () => {
     render(<ErrorMessage {...defaultProps} onClose={mockOnClose} />);
     
     const closeButton = screen.getByRole('button');
-    await user.click(closeButton);
+    await act(async () => {
+      await user.click(closeButton);
+    });
     
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
@@ -61,7 +63,9 @@ describe('ErrorMessage Component', () => {
     render(<ErrorMessage {...defaultProps} onClose={mockOnClose} />);
     
     const closeButton = screen.getByRole('button');
-    await user.click(closeButton);
+    await act(async () => {
+      await user.click(closeButton);
+    });
     
     expect(screen.queryByText('Test error message')).not.toBeInTheDocument();
   });

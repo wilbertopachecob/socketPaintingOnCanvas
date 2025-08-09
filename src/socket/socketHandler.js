@@ -13,7 +13,6 @@ class SocketHandler {
     this.io.on('connection', (socket) => {
       // Check if we've reached the user limit
       if (this.connectedUsers.size >= this.maxUsers) {
-        console.log(`Connection rejected: User limit reached (${this.maxUsers} users)`);
         socket.emit('connection_rejected', { 
           message: 'Server is at maximum capacity. Please try again later.',
           maxUsers: this.maxUsers
@@ -24,7 +23,6 @@ class SocketHandler {
 
       // Add user to connected users set
       this.connectedUsers.add(socket.id);
-      console.log(`User connected: ${socket.id} (${this.connectedUsers.size}/${this.maxUsers} users)`);
       
       // Send current user count to all clients
       this.io.emit('user_count_update', { 
@@ -48,7 +46,6 @@ class SocketHandler {
       // Handle disconnect
       socket.on('disconnect', () => {
         this.connectedUsers.delete(socket.id);
-        console.log(`User disconnected: ${socket.id} (${this.connectedUsers.size}/${this.maxUsers} users)`);
         
         // Update user count for remaining clients
         this.io.emit('user_count_update', { 
@@ -101,7 +98,6 @@ class SocketHandler {
     try {
       this.drawingManager.clearHistory();
       this.io.emit('clear_canvas');
-      console.log(`Canvas cleared by user: ${socket.id}`);
     } catch (error) {
       console.error('Error clearing canvas:', error.message);
       socket.emit('error', { message: 'Failed to clear canvas' });

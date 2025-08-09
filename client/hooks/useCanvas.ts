@@ -181,7 +181,12 @@ export const useCanvas = (socket: Socket | null, controls: CanvasControls) => {
   useEffect(() => {
     if (!socket) return;
 
+    let animationId: number;
+    let isActive = true;
+
     const drawingLoop = () => {
+      if (!isActive) return;
+      
       const mouse = mouseRef.current;
       if (mouse.click && mouse.move && mouse.pos_prev) {
         // Emit line data with correct order: [from_position, to_position]
@@ -192,13 +197,19 @@ export const useCanvas = (socket: Socket | null, controls: CanvasControls) => {
         mouse.move = false;
       }
       mouse.pos_prev = { ...mouse.pos };
-      requestAnimationFrame(drawingLoop);
+      
+      if (isActive) {
+        animationId = requestAnimationFrame(drawingLoop);
+      }
     };
 
-    const animationId = requestAnimationFrame(drawingLoop);
+    animationId = requestAnimationFrame(drawingLoop);
 
     return () => {
-      cancelAnimationFrame(animationId);
+      isActive = false;
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
     };
   }, [socket]);
 
