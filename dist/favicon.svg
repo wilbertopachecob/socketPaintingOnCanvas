@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Background circle -->
+  <circle cx="16" cy="16" r="15" fill="#4A90E2" stroke="#2C5AA0" stroke-width="1"/>
+  
+  <!-- Canvas/paper background -->
+  <rect x="8" y="8" width="16" height="16" rx="2" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="0.5"/>
+  
+  <!-- Drawing lines -->
+  <path d="M10 12 Q12 10 14 12 T18 12" stroke="#FF6B6B" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M10 16 Q12 14 14 16 T18 16" stroke="#4ECDC4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M10 20 Q12 18 14 20 T18 20" stroke="#45B7D1" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  
+  <!-- Pencil/brush icon -->
+  <path d="M22 6 L26 10 L24 12 L20 8 Z" fill="#FFD93D" stroke="#E6C200" stroke-width="0.5"/>
+  <path d="M20 8 L22 10 L20 12 L18 10 Z" fill="#FFD93D"/>
+  
+  <!-- Small dots representing collaboration -->
+  <circle cx="24" cy="24" r="1.5" fill="#FF6B6B"/>
+  <circle cx="26" cy="22" r="1.5" fill="#4ECDC4"/>
+  <circle cx="22" cy="26" r="1.5" fill="#45B7D1"/>
+</svg> 
