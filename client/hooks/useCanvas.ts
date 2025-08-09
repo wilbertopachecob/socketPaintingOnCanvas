@@ -29,6 +29,8 @@ export const useCanvas = (socket: Socket | null, controls: CanvasControls) => {
     const context = canvas.getContext('2d');
     if (!context) return;
 
+    // Draw line from position 0 (previous) to position 1 (current)
+    // Line format: [from_position, to_position]
     context.beginPath();
     context.moveTo(line[0].x * canvas.width, line[0].y * canvas.height);
     context.lineTo(line[1].x * canvas.width, line[1].y * canvas.height);
@@ -182,6 +184,8 @@ export const useCanvas = (socket: Socket | null, controls: CanvasControls) => {
     const drawingLoop = () => {
       const mouse = mouseRef.current;
       if (mouse.click && mouse.move && mouse.pos_prev) {
+        // Emit line data with correct order: [from_position, to_position]
+        // This draws FROM the previous position TO the current position
         socket.emit('draw_line', { 
           line: [mouse.pos_prev, mouse.pos] 
         });

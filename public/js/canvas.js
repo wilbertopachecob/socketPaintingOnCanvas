@@ -98,6 +98,8 @@ class Canvas {
   drawLine(line) {
     if (!line || line.length !== 2) return;
 
+    // Draw line from position 0 (previous) to position 1 (current)
+    // Line format: [from_position, to_position]
     this.context.beginPath();
     this.context.moveTo(line[0].x * this.canvas.width, line[0].y * this.canvas.height);
     this.context.lineTo(line[1].x * this.canvas.width, line[1].y * this.canvas.height);
@@ -111,6 +113,8 @@ class Canvas {
   startDrawingLoop() {
     const mainLoop = () => {
       if (this.mouse.click && this.mouse.move && this.mouse.pos_prev) {
+        // Emit line data with correct order: [from_position, to_position]
+        // This draws FROM the previous position TO the current position
         this.socket.emit('draw_line', { 
           line: [this.mouse.pos_prev, this.mouse.pos] 
         });
