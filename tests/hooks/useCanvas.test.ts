@@ -48,12 +48,27 @@ describe('useCanvas Hook', () => {
     } as any;
 
     // Mock canvas creation
-    HTMLCanvasElement.prototype.getContext = jest.fn(() => mockContext);
+    HTMLCanvasElement.prototype.getContext = jest.fn((contextId: string) => {
+      if (contextId === '2d') {
+        return mockContext;
+      }
+      return null;
+    }) as any;
     Object.defineProperty(HTMLCanvasElement.prototype, 'width', {
       writable: true,
       value: 800
     });
     Object.defineProperty(HTMLCanvasElement.prototype, 'height', {
+      writable: true,
+      value: 600
+    });
+    
+    // Mock the canvas width and height setters for resize testing
+    Object.defineProperty(mockCanvas, 'width', {
+      writable: true,
+      value: 800
+    });
+    Object.defineProperty(mockCanvas, 'height', {
       writable: true,
       value: 600
     });
@@ -219,25 +234,21 @@ describe('useCanvas Hook', () => {
   });
 
   it('should calculate relative position correctly', () => {
-    const { result } = renderHook(() => useCanvas(mockSocket, mockControls));
+    const { result } = renderUseCanvasWithCanvas(mockSocket, mockControls);
     
-    // Access the internal getRelativePos function through mouse events
-    // We'll test this indirectly by checking mouse event handling
-    if (result.current.canvasRef.current) {
-      result.current.canvasRef.current = mockCanvas;
-      
-      // Mock getBoundingClientRect
-      mockCanvas.getBoundingClientRect = jest.fn(() => ({
-        left: 100,
-        top: 50,
-        width: 800,
-        height: 600
-      })) as any;
-      
-      // Test is implicit through the fact that the hook sets up event listeners correctly
-      expect(mockCanvas.addEventListener).toHaveBeenCalledWith('mousedown', expect.any(Function));
-      expect(mockCanvas.addEventListener).toHaveBeenCalledWith('mousemove', expect.any(Function));
-    }
+    // Mock getBoundingClientRect
+    mockCanvas.getBoundingClientRect = jest.fn(() => ({
+      left: 100,
+      top: 50,
+      width: 800,
+      height: 600
+    })) as any;
+    
+    // Since we use renderUseCanvasWithCanvas, the canvas should be set up and event listeners added
+    // We need to check after the hook has had time to set up the canvas
+    expect(result.current.canvasRef.current).toBe(mockCanvas);
+    expect(mockCanvas.addEventListener).toHaveBeenCalledWith('mousedown', expect.any(Function));
+    expect(mockCanvas.addEventListener).toHaveBeenCalledWith('mousemove', expect.any(Function));
   });
 
   it('should handle touch events', () => {
@@ -254,34 +265,38 @@ describe('useCanvas Hook', () => {
   });
 
   it('should resize canvas on window resize', () => {
-    const { result } = renderHook(() => useCanvas(mockSocket, mockControls));
+    const { result } = renderUseCanvasWithCanvas(mockSocket, mockControls);
     
-    if (result.current.canvasRef.current) {
-      result.current.canvasRef.current = mockCanvas;
-      
-      // Simulate window resize
-      act(() => {
-        Object.defineProperty(window, 'innerWidth', { value: 1200 });
-        Object.defineProperty(window, 'innerHeight', { value: 900 });
-        window.dispatchEvent(new Event('resize'));
+    // Make sure canvas is properly set up
+    expect(result.current.canvasRef.current).toBe(mockCanvas);
+    
+    // Simulate window resize
+    act(() => {
+      Object.defineProperty(window, 'innerWidth', { 
+        value: 1200,
+        writable: true,
+        configurable: true 
       });
-      
-      expect(mockCanvas.width).toBe(1200);
-      expect(mockCanvas.height).toBe(900);
-    }
+      Object.defineProperty(window, 'innerHeight', { 
+        value: 900,
+        writable: true,
+        configurable: true 
+      });
+      window.dispatchEvent(new Event('resize'));
+    });
+    
+    // The hook should have updated the canvas dimensions
+    expect(mockCanvas.width).toBe(1200);
+    expect(mockCanvas.height).toBe(900);
   });
 
   it('should not draw invalid lines', () => {
-    const { result } = renderHook(() => useCanvas(mockSocket, mockControls));
+    const { result } = renderUseCanvasWithCanvas(mockSocket, mockControls);
     
     // Get the draw_line handler
     const drawLineHandler = mockSocket.on.mock.calls.find(
       call => call[0] === 'draw_line'
     )?.[1] as Function;
-    
-    if (result.current.canvasRef.current) {
-      result.current.canvasRef.current = mockCanvas;
-    }
     
     // Test with invalid line data
     act(() => {
@@ -298,11 +313,7 @@ describe('useCanvas Hook', () => {
   });
 
   it('should emit draw_line when drawing', () => {
-    const { result } = renderHook(() => useCanvas(mockSocket, mockControls));
-    
-    if (result.current.canvasRef.current) {
-      result.current.canvasRef.current = mockCanvas;
-    }
+    const { result } = renderUseCanvasWithCanvas(mockSocket, mockControls);
     
     // The drawing loop is tested indirectly through requestAnimationFrame
     expect(global.requestAnimationFrame).toHaveBeenCalled();
