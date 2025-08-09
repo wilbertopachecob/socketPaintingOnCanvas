@@ -223,9 +223,9 @@ input[type="range"]::-moz-range-thumb {
     .controls {
         top: 10px;
         left: 10px;
-        right: auto; /* don't stretch full width on mobile */
+        right: 10px; /* stretch full width on mobile */
         min-width: 0;
-        width: min(85vw, 320px); /* keep compact */
+        width: auto; /* let it expand to full width */
         max-height: 55vh; /* avoid covering too much canvas */
         overflow: auto; /* scroll if content grows */
         padding: 12px;
