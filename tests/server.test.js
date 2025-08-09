@@ -50,11 +50,6 @@ const createTestApp = () => {
     }
   });
   
-  // 404 handler for API routes
-  app.use('/api/*', (req, res) => {
-    res.status(404).json({ error: 'API route not found' });
-  });
-  
   return app;
 };
 
