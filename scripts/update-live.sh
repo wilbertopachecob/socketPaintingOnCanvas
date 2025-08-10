@@ -44,14 +44,7 @@ if [ -d ".git" ]; then
     # Check if there are changes to commit
     if [ -n "$(git status --porcelain)" ]; then
         git add .
-        git commit -m "Deploy: Update to latest React version with Socket.IO improvements
-        
-        - Updated production configuration for paint.wilbertopachecob.dev
-        - Added PM2 ecosystem configuration
-        - Improved build process and deployment scripts
-        - Enhanced Socket.IO CORS configuration
-        
-        Date: $(date)"
+        git commit -m "Deploy: Update live deployment ($(date))"
         
         # Push to remote repository
         git push origin master

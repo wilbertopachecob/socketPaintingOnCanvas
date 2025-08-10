@@ -38,10 +38,10 @@ module.exports = {
   
   deploy: {
     production: {
-      user: 'deploy', // Your server username
-      host: 'your-server-ip', // Your server IP
+      user: 'deploy', // Update with your actual server username
+      host: 'your-server-ip-or-domain', // Update with your actual server IP or domain
       ref: 'origin/master',
-      repo: 'https://github.com/yourusername/socketPaintingOnCanvas.git', // Your repo
+      repo: 'https://github.com/wilbertopachecob/socketPaintingOnCanvas.git', // Your repo
       path: '/var/www/socket-painting-app',
       'post-deploy': 'npm install && npm run build && pm2 reload ecosystem.config.js --env production'
     }
