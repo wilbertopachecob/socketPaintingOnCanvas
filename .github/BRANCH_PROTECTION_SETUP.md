@@ -33,7 +33,7 @@ Enable the following options:
   - `test (16.x)` - Node.js 16 tests
   - `test (18.x)` - Node.js 18 tests  
   - `test (20.x)` - Node.js 20 tests
-  - `build-and-test` - Build verification
+  - `build-and-test (20.x)` - Combined build and test verification
   - `merge-guard/all-checks` - Final merge verification
 
 #### Additional Protections
