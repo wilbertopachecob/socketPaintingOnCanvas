@@ -40,7 +40,7 @@ module.exports = {
     production: {
       user: process.env.DEPLOY_USER || '',
       host: process.env.DEPLOY_HOST || '',
-      ref: `origin/${process.env.DEFAULT_BRANCH || 'master'}`,
+      ref: `origin/${process.env.DEFAULT_BRANCH || 'main'}`,
       repo: process.env.REPO_URL || 'https://github.com/wilbertopachecob/socketPaintingOnCanvas.git',
       path: process.env.DEPLOY_PATH || '/var/www/socket-painting-app',
       'post-deploy': 'npm install && npm run build && pm2 reload ecosystem.config.js --env production'
