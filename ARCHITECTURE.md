@@ -66,11 +66,14 @@ npm run test:client
 # Run only server tests  
 npm run test:server
 
-# Watch mode for client tests
-npm run test:watch:client
+# Watch mode for all tests
+npm run test:watch
 
-# Watch mode for server tests
-npm run test:watch:server
+# Watch mode for specific client tests  
+cd client && npm run test:watch
+
+# Watch mode for specific server tests
+cd server && npm run test:watch
 ```
 
 ### Test Environments
