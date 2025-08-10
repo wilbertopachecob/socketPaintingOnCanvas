@@ -181,3 +181,66 @@ pm2 stop socket-painting-app    # Stop application
 2. Check for memory leaks in the application
 3. Optimize build output with webpack configuration
 4. Use production builds for better performance
+
+## Common Error Solutions
+
+### "Route not found" Error
+
+**Root Cause**: Port conflict between multiple PM2 processes
+- **NOT** a code issue (routes are correct)
+- **NOT** a build issue (dist folder exists)
+- **NOT** an environment variable issue
+
+**Solution**: Clean up duplicate PM2 processes
+```bash
+# Check for duplicate processes
+pm2 status
+
+# Stop and remove all processes
+pm2 stop mypaintapp && pm2 delete mypaintapp
+pm2 stop socket-painting-app && pm2 delete socket-painting-app
+
+# Start fresh with only the main app
+pm2 start ecosystem.config.js --env production
+pm2 save
+
+# Verify it's working
+pm2 status
+pm2 logs socket-painting-app --lines 10
+```
+
+**Best Practices**:
+- Use only one PM2 process per application
+- Use `ecosystem.config.js` for consistent configuration
+- Always run `pm2 save` after configuration changes
+- Monitor logs regularly: `pm2 logs socket-painting-app`
+
+### Port Conflicts
+```bash
+# Check what's using a specific port
+sudo netstat -tlnp | grep :3000
+# or
+sudo lsof -i :3000
+
+# Kill conflicting processes if needed
+sudo kill -9 <PID>
+```
+
+### PM2 Process Management
+```bash
+# List all processes
+pm2 list
+
+# Restart a specific process
+pm2 restart socket-painting-app
+
+# Reload configuration
+pm2 reload ecosystem.config.js --env production
+
+# Save current configuration
+pm2 save
+
+# Setup PM2 to start on boot
+pm2 startup
+pm2 save
+```

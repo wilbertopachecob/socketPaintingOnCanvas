@@ -49,22 +49,8 @@ const socketHandlerInstance = socketHandler(io);
 // Store socket handler instance in app locals for routes to access
 app.locals.socketHandler = socketHandlerInstance;
 
-// Legacy route redirects for backward compatibility (must come before API routes)
-app.get('/health', (req, res) => {
-  res.redirect(301, '/api/health');
-});
-
-app.get('/users', (req, res) => {
-  res.redirect(301, '/api/users');
-});
-
 // API routes
 app.use('/api', routes);
-
-// 404 handler for API routes only (must come before catch-all route)
-app.use('/api/*', (req, res) => {
-  res.status(404).json({ error: 'API route not found' });
-});
 
 // Error handling middleware
 app.use((err, _req, res, _next) => {
@@ -72,7 +58,7 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
-// Serve React app for all non-API routes
+// Serve React app for all non-API routes (SPA fallback)
 app.get('*', (req, res) => {
   const indexPath = path.join(__dirname, '../dist/index.html');
   if (require('fs').existsSync(indexPath)) {
