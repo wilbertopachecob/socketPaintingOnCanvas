@@ -41,7 +41,17 @@ npm run build
 print_status "React build completed"
 
 # Get the default branch name
-DEFAULT_BRANCH=${DEFAULT_BRANCH:-$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo 'master')}
+if git show-ref --verify --quiet refs/heads/main; then
+    DEFAULT_BRANCH="main"
+elif git show-ref --verify --quiet refs/heads/master; then
+    DEFAULT_BRANCH="master"
+else
+    # Try to detect from remote HEAD, fallback to master
+    DEFAULT_BRANCH=$(git branch -r --points-at origin/HEAD | sed -n 's@origin/@@p' | head -n 1)
+    if [ -z "$DEFAULT_BRANCH" ]; then
+        DEFAULT_BRANCH="master"
+    fi
+fi
 
 # 2. Commit and push changes to repository (if git repo exists)
 if [ -d ".git" ]; then

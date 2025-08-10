@@ -41,6 +41,13 @@ else
     exit 1
 fi
 
+# Validate SESSION_SECRET is set and secure
+if [ -z "$SESSION_SECRET" ] || [ "$SESSION_SECRET" = "REPLACE_ME_WITH_A_SECURE_SESSION_SECRET" ] || [ "$SESSION_SECRET" = "REPLACE_WITH_SECURE_RANDOM_SECRET" ]; then
+    print_error "SESSION_SECRET must be set to a secure value. Generate one with: openssl rand -base64 32"
+    print_error "Set it as an environment variable: export SESSION_SECRET=your_secure_secret"
+    exit 1
+fi
+
 # Check if PM2 is installed
 if ! command -v pm2 &> /dev/null; then
     print_error "PM2 is not installed. Install it with: npm install -g pm2"
@@ -79,8 +86,9 @@ pm2 save
 print_status "PM2 configuration saved"
 
 # Setup PM2 startup script (run only once per server)
-if ! pm2 unstartup &> /dev/null; then
-    echo "🔄 Setting up PM2 startup script..."
+PM2_STARTUP_STATUS=$(pm2 startup | grep -i "command" || true)
+if [ -n "$PM2_STARTUP_STATUS" ]; then
+    echo "🔄 PM2 startup is not fully configured."
     read -p "This step requires running a privileged command to configure PM2 startup. Do you want to proceed? [y/N] " confirm
     if [[ "$confirm" =~ ^[Yy]$ ]]; then
         sudo env PATH=$PATH:$(dirname $(which node)) $(which pm2) startup systemd -u $USER --hp $HOME
@@ -88,6 +96,8 @@ if ! pm2 unstartup &> /dev/null; then
     else
         print_warning "Skipped PM2 startup script configuration. You may need to run it manually."
     fi
+else
+    print_status "PM2 startup script is already configured"
 fi
 
 echo ""

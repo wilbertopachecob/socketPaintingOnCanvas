@@ -11,7 +11,7 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 # Check if PM2 is running
-if ! pgrep -f "PM2 v[0-9]" > /dev/null && ! pm2 ping > /dev/null 2>&1; then
+if ! pm2 ping > /dev/null 2>&1; then
     echo -e "${RED}❌ PM2 is not running${NC}"
     exit 1
 fi
