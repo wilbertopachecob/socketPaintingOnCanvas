@@ -241,8 +241,8 @@ verify_deployment() {
     pm2 status --no-daemon
     
     # Check application health
-    print_status "INFO" "Checking application health..."
-    if curl -s "http://localhost:3000/health" >/dev/null 2>&1; then
+print_status "INFO" "Checking application health..."
+if curl -s "http://localhost:3000/api/health" >/dev/null 2>&1; then
         print_status "SUCCESS" "Health endpoint is responding"
     else
         print_status "WARNING" "Health endpoint is not responding yet"
@@ -282,7 +282,7 @@ show_deployment_summary() {
     echo ""
     echo "🔗 Local URLs:"
     echo "   - Application: http://localhost:3000"
-    echo "   - Health Check: http://localhost:3000/health"
+    echo "   - Health Check: http://localhost:3000/api/health"
     echo "   - API: http://localhost:3000/api"
     
     echo ""

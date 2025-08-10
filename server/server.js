@@ -52,13 +52,22 @@ app.locals.socketHandler = socketHandlerInstance;
 // API routes
 app.use('/api', routes);
 
+// Legacy route redirects for backward compatibility
+app.get('/health', (req, res) => {
+  res.redirect(301, '/api/health');
+});
+
+app.get('/users', (req, res) => {
+  res.redirect(301, '/api/users');
+});
+
 // Error handling middleware
 app.use((err, _req, res, _next) => {
   console.error('Error:', err.stack);
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
-// Serve React app for all non-API routes (SPA fallback)
+// Serve React app for client-side routing (catch-all for SPA)
 app.get('*', (req, res) => {
   const indexPath = path.join(__dirname, '../dist/index.html');
   if (require('fs').existsSync(indexPath)) {

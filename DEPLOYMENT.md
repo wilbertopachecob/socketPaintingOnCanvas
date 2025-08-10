@@ -114,18 +114,18 @@
 
 1. **Basic Health Check**
    ```bash
-   curl http://localhost:3000/health
+   curl http://localhost:3000/api/health
    ```
 
-2. **Detailed Health Check**
+2. **API Health Check**
    ```bash
-   curl http://localhost:3000/health/detailed
+   curl http://localhost:3000/api
    ```
 
 3. **API Health Check**
    ```bash
    curl http://localhost:3000/api
-   curl http://localhost:3000/api/users/health
+   curl http://localhost:3000/api/users
    ```
 
 ### Log Management
@@ -144,28 +144,21 @@
    └── error.log        # Error logs only
    ```
 
-## Architecture Improvements
+## Architecture Features
 
-### Security Enhancements
+### Core Functionality
 
-- **Helmet.js**: Security headers and CSP configuration
-- **Rate Limiting**: API endpoint protection (100 requests per 15 minutes)
-- **Input Validation**: Request parameter validation
-- **Error Handling**: Secure error responses (no stack traces in production)
-
-### Performance Optimizations
-
-- **Compression**: Gzip compression for all responses
-- **Static File Caching**: 1-year cache for static assets
-- **Memory Management**: Optimized Node.js memory settings
+- **Socket.IO Integration**: Real-time collaborative drawing
+- **Express Server**: Lightweight API server
+- **Static File Serving**: Production build support
+- **Error Handling**: Basic error responses
 - **Graceful Shutdown**: Proper process termination handling
 
 ### Monitoring & Observability
 
-- **Comprehensive Health Checks**: System metrics, memory usage, uptime
-- **Request Logging**: API request tracking with timestamps
-- **Error Tracking**: Unique request IDs for debugging
-- **Performance Metrics**: CPU, memory, and disk usage monitoring
+- **Basic Health Checks**: Application status monitoring
+- **Request Logging**: API request tracking with morgan
+- **PM2 Integration**: Process management and monitoring
 
 ## PM2 Configuration Best Practices
 
@@ -258,7 +251,7 @@ pm2 status
 pm2 logs socket-painting-app --lines 50
 
 # Application health
-curl http://localhost:3000/health
+curl http://localhost:3000/api/health
 
 # System resources
 ./scripts/monitor.sh --system
@@ -316,30 +309,29 @@ pm2 monit
 
 ### Health Monitoring
 
-- `GET /health` - Basic health check
-- `GET /health/detailed` - Comprehensive system health
+- `GET /api/health` - Basic health check
 
 ### API Routes
 
 - `GET /api` - API information and available endpoints
 - `GET /api/health` - API health status
 - `GET /api/users` - Current user count
-- `GET /api/users/stats` - Detailed user statistics
-- `GET /api/users/rooms/:roomId` - Room-specific user count
-- `GET /api/users/health` - Users service health check
 
 ### Response Format
 
-All API responses include:
+**Health Endpoint (`/api/health`)**:
+- `status`: Response status (e.g., "OK")
 - `timestamp`: ISO 8601 timestamp
-- `status`: Response status
 - `service`: Service name
 - `version`: API version
 
-Error responses include:
+**Users Endpoint (`/api/users`)**:
+- Returns user count object from socket handler
+
+**Error responses include**:
 - `error`: Error description
-- `message`: Detailed error message
-- `requestId`: Unique request identifier (for debugging)
+- `status`: Error status (for service unavailable)
+- `message`: Detailed error message (for 500 errors)
 
 ## Environment Variables
 
@@ -421,22 +413,20 @@ cd server && npm update && cd ..
 - Set appropriate restart policies
 
 ### 2. **Security**
-- Implement rate limiting on API endpoints
-- Use security headers (Helmet.js)
-- Validate all input parameters
-- Secure error handling (no stack traces in production)
+- Basic input validation
+- Secure error handling
+- Environment-based configuration
 
 ### 3. **Performance**
-- Enable compression for all responses
-- Implement proper caching headers
 - Monitor and optimize memory usage
 - Use cluster mode for better performance
+- Efficient Socket.IO connections
 
 ### 4. **Monitoring**
-- Comprehensive health check endpoints
+- Basic health check endpoints
 - Real-time monitoring with PM2
-- Structured logging with timestamps
-- Performance metrics tracking
+- Structured logging with morgan
+- Process health monitoring
 
 ### 5. **Deployment**
 - Automated deployment scripts
