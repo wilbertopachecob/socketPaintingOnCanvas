@@ -4,7 +4,9 @@ A real-time collaborative drawing application built with React, TypeScript, Node
 
 ## Live Demo
 
-Try it here: [paint.wilbertopachecob.dev](https://paint.wilbertopachecob.dev/)
+🚀 **Try it here: [paint.wilbertopachecob.dev](https://paint.wilbertopachecob.dev/)**
+
+The application is deployed using PM2 and Cloudflare for production reliability and performance.
 
 ## Features
 
@@ -115,6 +117,15 @@ npm run dev:client
 - `npm run lint` - Run ESLint on both frontend and backend
 - `npm run lint:fix` - Fix ESLint issues automatically
 
+### Deployment (PM2)
+- `npm run setup:prod` - Initial production setup with PM2
+- `npm run pm2:start` - Start application with PM2
+- `npm run pm2:stop` - Stop PM2 process
+- `npm run pm2:restart` - Restart PM2 process
+- `npm run pm2:logs` - View PM2 logs
+- `npm run pm2:monit` - Monitor PM2 processes
+- `npm run deploy:prod` - Build and reload production deployment
+
 ## API Endpoints
 
 ### Application Routes
@@ -207,6 +218,37 @@ npm test
 - ES6+ support (all modern browsers)
 - Canvas API support
 - WebSocket support
+
+## Deployment
+
+For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md).
+
+### Quick Start
+
+1. **Local Development:**
+   ```bash
+   ./scripts/start-app.sh
+   ```
+
+2. **Production Deployment:**
+   ```bash
+   ./scripts/deploy.sh
+   ```
+
+3. **Monitor Production:**
+   ```bash
+   ./scripts/monitor.sh
+   ```
+
+### Production Environment
+
+The application is configured for production deployment with:
+
+- **PM2** for process management and clustering
+- **Cloudflare** for SSL, CDN, and DDoS protection
+- **Automated deployment scripts** for easy updates
+- **Health monitoring** and logging
+- **Environment-based configuration**
 
 ## Contributing
 
