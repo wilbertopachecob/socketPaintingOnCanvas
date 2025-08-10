@@ -22,6 +22,10 @@ ENV_FILE="config.prod.env"
 LOG_DIR="./logs"
 BUILD_DIR="./dist"
 
+# Application settings (configurable)
+APP_HOST="${APP_HOST:-localhost}"
+APP_PORT="${APP_PORT:-3000}"
+
 # Function to print colored output
 print_status() {
     local status=$1
@@ -242,7 +246,7 @@ verify_deployment() {
     
     # Check application health
 print_status "INFO" "Checking application health..."
-if curl -s "http://localhost:3000/api/health" >/dev/null 2>&1; then
+if curl -s "http://${APP_HOST}:${APP_PORT}/api/health" >/dev/null 2>&1; then
         print_status "SUCCESS" "Health endpoint is responding"
     else
         print_status "WARNING" "Health endpoint is not responding yet"
@@ -250,7 +254,7 @@ if curl -s "http://localhost:3000/api/health" >/dev/null 2>&1; then
     
     # Check API endpoints
     print_status "INFO" "Checking API endpoints..."
-    if curl -s "http://localhost:3000/api" >/dev/null 2>&1; then
+    if curl -s "http://${APP_HOST}:${APP_PORT}/api" >/dev/null 2>&1; then
         print_status "SUCCESS" "API endpoints are responding"
     else
         print_status "WARNING" "API endpoints are not responding yet"
@@ -258,7 +262,7 @@ if curl -s "http://localhost:3000/api/health" >/dev/null 2>&1; then
     
     # Check main application
     print_status "INFO" "Checking main application..."
-    if curl -s "http://localhost:3000" >/dev/null 2>&1; then
+    if curl -s "http://${APP_HOST}:${APP_PORT}" >/dev/null 2>&1; then
         print_status "SUCCESS" "Main application is responding"
     else
         print_status "WARNING" "Main application is not responding yet"
@@ -281,9 +285,9 @@ show_deployment_summary() {
     
     echo ""
     echo "🔗 Local URLs:"
-    echo "   - Application: http://localhost:3000"
-    echo "   - Health Check: http://localhost:3000/api/health"
-    echo "   - API: http://localhost:3000/api"
+    echo "   - Application: http://${APP_HOST}:${APP_PORT}"
+echo "   - Health Check: http://${APP_HOST}:${APP_PORT}/api/health"
+echo "   - API: http://${APP_HOST}:${APP_PORT}/api"
     
     echo ""
     echo "📊 Monitoring Commands:"

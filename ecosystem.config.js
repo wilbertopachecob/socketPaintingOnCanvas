@@ -69,13 +69,7 @@ module.exports = {
       repo: process.env.REPO_URL || 'https://github.com/wilbertopachecob/socketPaintingOnCanvas.git',
       path: process.env.DEPLOY_PATH || '/var/www/socket-painting-app',
       'pre-deploy-local': 'echo "This is a local executed command"',
-      'post-deploy': [
-        'npm ci --include=dev',
-        'cd server && npm ci --production && cd ..',
-        'npm run build',
-        'pm2 reload ecosystem.config.js --env production',
-        'pm2 save'
-      ],
+      'post-deploy': 'npm ci --include=dev && cd server && npm ci --production && cd .. && npm run build && pm2 reload ecosystem.config.js --env production && pm2 save',
       'pre-setup': 'echo "This command will be executed on the host before the setup process starts"',
       'post-setup': 'echo "This command will be executed on the host after cloning the repo"'
     },
@@ -86,13 +80,7 @@ module.exports = {
       ref: 'origin/develop',
       repo: process.env.REPO_URL || 'https://github.com/wilbertopachecob/socketPaintingOnCanvas.git',
       path: process.env.STAGING_PATH || '/var/www/socket-painting-app-staging',
-      'post-deploy': [
-        'npm ci --include=dev',
-        'cd server && npm ci --production && cd ..',
-        'npm run build',
-        'pm2 reload ecosystem.config.js --env production',
-        'pm2 save'
-      ]
+      'post-deploy': 'npm ci --include=dev && cd server && npm ci --production && cd .. && npm run build && pm2 reload ecosystem.config.js --env production && pm2 save'
     }
   }
 };

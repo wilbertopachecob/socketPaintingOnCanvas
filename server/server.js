@@ -49,10 +49,7 @@ const socketHandlerInstance = socketHandler(io);
 // Store socket handler instance in app locals for routes to access
 app.locals.socketHandler = socketHandlerInstance;
 
-// API routes
-app.use('/api', routes);
-
-// Legacy route redirects for backward compatibility
+// Legacy route redirects for backward compatibility (must come before catch-all)
 app.get('/health', (req, res) => {
   res.redirect(301, '/api/health');
 });
@@ -60,6 +57,9 @@ app.get('/health', (req, res) => {
 app.get('/users', (req, res) => {
   res.redirect(301, '/api/users');
 });
+
+// API routes
+app.use('/api', routes);
 
 // Error handling middleware
 app.use((err, _req, res, _next) => {
