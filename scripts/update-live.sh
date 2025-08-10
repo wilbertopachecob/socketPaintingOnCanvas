@@ -90,7 +90,7 @@ echo "3. Pull the latest changes:"
 echo "   git pull origin $DEFAULT_BRANCH  # (current branch: '$DEFAULT_BRANCH')"
 echo ""
 echo "4. Install dependencies and build:"
-echo "   npm ci  # Install root dependencies (including build tools)"
+echo "   npm ci --include=dev  # Install root dependencies (including build tools)"
 echo "   cd server && npm ci --production && cd ..  # Install server dependencies"
 echo "   npm run build"
 echo ""
@@ -112,7 +112,7 @@ if [ -f "$HOME/.ssh/config" ] && grep -q "paint.wilbertopachecob.dev\|your-serve
         print_info "Deploying directly to server..."
         
         # This would require SSH key setup and proper server configuration
-        # ssh your-server "cd \"$APP_DIR_ON_SERVER\" && git pull origin \"$DEFAULT_BRANCH\" && npm ci --production && npm run build && pm2 reload ecosystem.config.js --env production"
+        # ssh your-server "cd \"$APP_DIR_ON_SERVER\" && git pull origin \"$DEFAULT_BRANCH\" && npm ci --include=dev && cd server && npm ci --production && cd .. && npm run build && pm2 reload ecosystem.config.js --env production"
         
         print_warning "Direct deployment requires SSH configuration. Please manually deploy using the steps above."
     fi

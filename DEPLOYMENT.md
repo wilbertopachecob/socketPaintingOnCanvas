@@ -57,7 +57,7 @@
 
 1. **Install dependencies**
    ```bash
-   npm ci  # Install root dependencies (including build tools)
+   npm ci --include=dev  # Install root dependencies (including build tools)
    cd server && npm ci --production && cd ..  # Install server dependencies
    ```
 
@@ -105,7 +105,7 @@ For updating an already deployed application:
    git pull origin main
    
    # Install dependencies and build
-   npm ci  # Install root dependencies (including build tools)
+   npm ci --include=dev  # Install root dependencies (including build tools)
    cd server && npm ci --production && cd ..  # Install server dependencies
    npm run build
    

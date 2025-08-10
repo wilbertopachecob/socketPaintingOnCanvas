@@ -66,7 +66,7 @@ print_status "Created logs directory"
 
 # Install root dependencies (including build tools)
 echo "📦 Installing root dependencies (including build tools)..."
-npm ci
+npm ci --include=dev
 print_status "Root dependencies installed"
 
 # Install server dependencies

@@ -51,7 +51,7 @@ echo "📦 Checking dependencies..."
 if [ ! -d "node_modules" ] || [ ! -d "server/node_modules" ]; then
     echo "   Installing dependencies..."
     npm install
-    cd server && npm install && cd ..
+    cd server && npm ci --production && cd ..
     echo "   Dependencies installed"
 else
     echo "   Dependencies already installed"
