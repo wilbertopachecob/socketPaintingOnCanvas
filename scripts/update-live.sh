@@ -30,6 +30,9 @@ print_error() {
 # Error handling
 set -e
 
+# Configuration
+APP_DIR_ON_SERVER=${APP_DIR_ON_SERVER:-"/var/www/socket-painting-app"}
+
 print_info "Starting deployment update process..."
 
 # 1. Build the React application
@@ -67,7 +70,7 @@ echo "1. SSH into your server:"
 echo "   ssh your-username@your-server-ip"
 echo ""
 echo "2. Navigate to your application directory:"
-echo "   cd /var/www/socket-painting-app  # or wherever your app is located"
+echo "   cd $APP_DIR_ON_SERVER  # (configured app directory)"
 echo ""
 echo "3. Pull the latest changes:"
 echo "   git pull origin $DEFAULT_BRANCH  # (current branch: '$DEFAULT_BRANCH')"
@@ -94,7 +97,7 @@ if [ -f "$HOME/.ssh/config" ] && grep -q "paint.wilbertopachecob.dev\|your-serve
         print_info "Deploying directly to server..."
         
         # This would require SSH key setup and proper server configuration
-        # ssh your-server "cd /var/www/socket-painting-app && git pull origin \"$DEFAULT_BRANCH\" && npm ci --production && npm run build && pm2 reload ecosystem.config.js --env production"
+        # ssh your-server "cd \"$APP_DIR_ON_SERVER\" && git pull origin \"$DEFAULT_BRANCH\" && npm ci --production && npm run build && pm2 reload ecosystem.config.js --env production"
         
         print_warning "Direct deployment requires SSH configuration. Please manually deploy using the steps above."
     fi

@@ -38,11 +38,21 @@ module.exports = {
   
   deploy: {
     production: {
-      user: process.env.DEPLOY_USER || 'deploy', // Set DEPLOY_USER in your environment
-      host: process.env.DEPLOY_HOST || 'your-server-ip-or-domain', // Set DEPLOY_HOST in your environment
+      user: (() => {
+        if (!process.env.DEPLOY_USER) {
+          throw new Error("DEPLOY_USER environment variable must be set for deployment.");
+        }
+        return process.env.DEPLOY_USER;
+      })(),
+      host: (() => {
+        if (!process.env.DEPLOY_HOST) {
+          throw new Error("DEPLOY_HOST environment variable must be set for deployment.");
+        }
+        return process.env.DEPLOY_HOST;
+      })(),
       ref: `origin/${process.env.DEFAULT_BRANCH || 'master'}`,
-      repo: process.env.REPO_URL || 'https://github.com/wilbertopachecob/socketPaintingOnCanvas.git', // Set REPO_URL in your environment
-      path: '/var/www/socket-painting-app',
+      repo: process.env.REPO_URL || 'https://github.com/wilbertopachecob/socketPaintingOnCanvas.git',
+      path: process.env.DEPLOY_PATH || '/var/www/socket-painting-app',
       'post-deploy': 'npm install && npm run build && pm2 reload ecosystem.config.js --env production'
     }
   }

@@ -81,8 +81,13 @@ print_status "PM2 configuration saved"
 # Setup PM2 startup script (run only once per server)
 if ! pm2 unstartup &> /dev/null; then
     echo "🔄 Setting up PM2 startup script..."
-    sudo env PATH=$PATH:$(dirname $(which node)) $(which pm2) startup systemd -u $USER --hp $HOME
-    print_warning "PM2 startup script configured. Run 'pm2 save' to save current process list"
+    read -p "This step requires running a privileged command to configure PM2 startup. Do you want to proceed? [y/N] " confirm
+    if [[ "$confirm" =~ ^[Yy]$ ]]; then
+        sudo env PATH=$PATH:$(dirname $(which node)) $(which pm2) startup systemd -u $USER --hp $HOME
+        print_warning "PM2 startup script configured. Run 'pm2 save' to save current process list"
+    else
+        print_warning "Skipped PM2 startup script configuration. You may need to run it manually."
+    fi
 fi
 
 echo ""
