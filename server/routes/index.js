@@ -14,8 +14,8 @@ router.get('/', (req, res) => {
     message: 'Collaborative Drawing Canvas API',
     version: '1.0.0',
     endpoints: {
-      health: '/health',
-      users: '/users'
+      health: '/api/health',
+      users: '/api/users'
     },
     documentation: 'See README.md for API documentation'
   });
