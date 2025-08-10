@@ -35,7 +35,11 @@ APP_DIR_ON_SERVER=${APP_DIR_ON_SERVER:-"/var/www/socket-painting-app"}
 
 print_info "Starting deployment update process..."
 
-# 1. Build the React application
+# 1. Install dependencies and build the React application
+echo "📦 Installing dependencies..."
+npm install
+print_status "Dependencies installed"
+
 echo "🔨 Building React application..."
 npm run build
 print_status "React build completed"
@@ -86,7 +90,8 @@ echo "3. Pull the latest changes:"
 echo "   git pull origin $DEFAULT_BRANCH  # (current branch: '$DEFAULT_BRANCH')"
 echo ""
 echo "4. Install dependencies and build:"
-echo "   npm ci --production"
+echo "   npm ci  # Install root dependencies (including build tools)"
+echo "   cd server && npm ci --production && cd ..  # Install server dependencies"
 echo "   npm run build"
 echo ""
 echo "5. Update PM2 deployment:"

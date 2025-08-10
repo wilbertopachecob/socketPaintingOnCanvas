@@ -46,6 +46,17 @@ fi
 
 echo "✅ Ports are available"
 
+# Check and install dependencies if needed
+echo "📦 Checking dependencies..."
+if [ ! -d "node_modules" ] || [ ! -d "server/node_modules" ]; then
+    echo "   Installing dependencies..."
+    npm install
+    cd server && npm install && cd ..
+    echo "   Dependencies installed"
+else
+    echo "   Dependencies already installed"
+fi
+
 # Create logs directory if it doesn't exist
 mkdir -p logs
 

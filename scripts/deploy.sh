@@ -64,10 +64,15 @@ fi
 mkdir -p logs
 print_status "Created logs directory"
 
-# Install dependencies
-echo "📦 Installing dependencies..."
-npm ci --production
-print_status "Dependencies installed"
+# Install root dependencies (including build tools)
+echo "📦 Installing root dependencies (including build tools)..."
+npm ci
+print_status "Root dependencies installed"
+
+# Install server dependencies
+echo "📦 Installing server dependencies..."
+cd server && npm ci --production && cd ..
+print_status "Server dependencies installed"
 
 # Build the application
 echo "🔨 Building application..."
