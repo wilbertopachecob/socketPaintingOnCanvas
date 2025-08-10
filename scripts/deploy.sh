@@ -32,7 +32,9 @@ fi
 
 # Load production environment variables
 if [ -f "config.prod.env" ]; then
-    export $(cat config.prod.env | grep -v '^#' | xargs)
+    set -a
+    source config.prod.env
+    set +a
     print_status "Loaded production environment variables"
 else
     print_error "config.prod.env not found. Please create it first."
