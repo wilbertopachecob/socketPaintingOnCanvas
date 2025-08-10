@@ -42,7 +42,13 @@ else
 fi
 
 # Validate SESSION_SECRET is set and secure
-if [ -z "$SESSION_SECRET" ] || [ "$SESSION_SECRET" = "REPLACE_ME_WITH_A_SECURE_SESSION_SECRET" ] || [ "$SESSION_SECRET" = "REPLACE_WITH_SECURE_RANDOM_SECRET" ]; then
+# Extract placeholder from config.prod.env.example to avoid hardcoded values
+SESSION_SECRET_PLACEHOLDER=""
+if [ -f "config.prod.env.example" ]; then
+    SESSION_SECRET_PLACEHOLDER=$(grep -E '^SESSION_SECRET=' config.prod.env.example | sed -E 's/^SESSION_SECRET=//' | tr -d '"'"'"'')
+fi
+
+if [ -z "$SESSION_SECRET" ] || [ "$SESSION_SECRET" = "$SESSION_SECRET_PLACEHOLDER" ]; then
     print_error "SESSION_SECRET must be set to a secure value. Generate one with: openssl rand -base64 32"
     print_error "Set it as an environment variable: export SESSION_SECRET=your_secure_secret"
     exit 1

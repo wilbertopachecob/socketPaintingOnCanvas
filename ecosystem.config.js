@@ -38,18 +38,8 @@ module.exports = {
   
   deploy: {
     production: {
-      user: (() => {
-        if (!process.env.DEPLOY_USER) {
-          throw new Error("DEPLOY_USER environment variable must be set for deployment.");
-        }
-        return process.env.DEPLOY_USER;
-      })(),
-      host: (() => {
-        if (!process.env.DEPLOY_HOST) {
-          throw new Error("DEPLOY_HOST environment variable must be set for deployment.");
-        }
-        return process.env.DEPLOY_HOST;
-      })(),
+      user: process.env.DEPLOY_USER || '',
+      host: process.env.DEPLOY_HOST || '',
       ref: `origin/${process.env.DEFAULT_BRANCH || 'master'}`,
       repo: process.env.REPO_URL || 'https://github.com/wilbertopachecob/socketPaintingOnCanvas.git',
       path: process.env.DEPLOY_PATH || '/var/www/socket-painting-app',
