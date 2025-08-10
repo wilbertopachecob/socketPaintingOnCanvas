@@ -32,8 +32,18 @@ Internet → Cloudflare → Your Server (PM2) → React App + Socket.IO Server
 git clone https://github.com/wilbertopachecob/socketPaintingOnCanvas.git
 cd socketPaintingOnCanvas
 
-# Install dependencies
+# Install root dependencies (scripts and build tools)
 npm install
+
+# Install server dependencies
+cd server
+npm install
+cd ..
+
+# Install client dependencies
+cd client
+npm install
+cd ..
 
 # Start development servers
 ./scripts/start-app.sh
@@ -66,8 +76,18 @@ sudo chown $USER:$USER /var/www/socket-painting-app
 cd /var/www/socket-painting-app
 git clone https://github.com/wilbertopachecob/socketPaintingOnCanvas.git .
 
-# Install production dependencies
+# Install root dependencies (scripts and build tools)
 npm ci --production
+
+# Install server dependencies
+cd server
+npm ci --production
+cd ..
+
+# Install client dependencies (needed for build)
+cd client
+npm ci
+cd ..
 
 # Build React application
 npm run build
@@ -138,8 +158,24 @@ paint.wilbertopachecob.dev/*
 # Then on server:
 cd /var/www/socket-painting-app
 git pull origin master
+
+# Update all dependencies
 npm ci --production
+
+# Update server dependencies
+cd server
+npm ci --production
+cd ..
+
+# Update client dependencies (for build)
+cd client
+npm ci
+cd ..
+
+# Rebuild application
 npm run build
+
+# Reload PM2 process
 pm2 reload ecosystem.config.js --env production
 ```
 
@@ -152,8 +188,18 @@ cd /var/www/socket-painting-app
 # Pull latest changes
 git pull origin master
 
-# Install any new dependencies
+# Install any new root dependencies
 npm ci --production
+
+# Install any new server dependencies
+cd server
+npm ci --production
+cd ..
+
+# Install any new client dependencies
+cd client
+npm ci
+cd ..
 
 # Rebuild application
 npm run build
@@ -244,8 +290,17 @@ sudo systemctl enable fail2ban
 
 3. **Build failures:**
    ```bash
+   # Clean all node_modules
    rm -rf node_modules package-lock.json
+   rm -rf server/node_modules server/package-lock.json
+   rm -rf client/node_modules client/package-lock.json
+   
+   # Reinstall all dependencies
    npm install
+   cd server && npm install && cd ..
+   cd client && npm install && cd ..
+   
+   # Rebuild application
    npm run build
    ```
 

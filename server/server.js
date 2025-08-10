@@ -61,6 +61,11 @@ app.get('/users', (req, res) => {
 // API routes
 app.use('/api', routes);
 
+// 404 handler for API routes only (must come before catch-all route)
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ error: 'API route not found' });
+});
+
 // Error handling middleware
 app.use((err, _req, res, _next) => {
   console.error('Error:', err.stack);
@@ -76,11 +81,6 @@ app.get('*', (req, res) => {
     // Fallback for development when dist doesn't exist
     res.status(503).send('React app not built. Run npm run build first.');
   }
-});
-
-// 404 handler for API routes only
-app.use('/api/*', (req, res) => {
-  res.status(404).json({ error: 'API route not found' });
 });
 
 // Start server
