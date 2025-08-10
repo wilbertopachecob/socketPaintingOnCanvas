@@ -37,6 +37,9 @@ echo "🔨 Building React application..."
 npm run build
 print_status "React build completed"
 
+# Get the default branch name
+DEFAULT_BRANCH=${DEFAULT_BRANCH:-$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo 'master')}
+
 # 2. Commit and push changes to repository (if git repo exists)
 if [ -d ".git" ]; then
     echo "📤 Committing and pushing changes to repository..."
@@ -47,7 +50,7 @@ if [ -d ".git" ]; then
         git commit -m "Deploy: Update live deployment ($(date))"
         
         # Push to remote repository
-        git push origin master
+        git push origin "$DEFAULT_BRANCH"
         print_status "Changes committed and pushed to repository"
     else
         print_info "No changes to commit"
@@ -67,7 +70,7 @@ echo "2. Navigate to your application directory:"
 echo "   cd /var/www/socket-painting-app  # or wherever your app is located"
 echo ""
 echo "3. Pull the latest changes:"
-echo "   git pull origin master"
+echo "   git pull origin \$DEFAULT_BRANCH  # (usually 'master' or 'main')"
 echo ""
 echo "4. Install dependencies and build:"
 echo "   npm ci --production"
@@ -91,7 +94,7 @@ if [ -f "$HOME/.ssh/config" ] && grep -q "paint.wilbertopachecob.dev\|your-serve
         print_info "Deploying directly to server..."
         
         # This would require SSH key setup and proper server configuration
-        # ssh your-server "cd /var/www/socket-painting-app && git pull origin master && npm ci --production && npm run build && pm2 reload ecosystem.config.js --env production"
+        # ssh your-server "cd /var/www/socket-painting-app && git pull origin $DEFAULT_BRANCH && npm ci --production && npm run build && pm2 reload ecosystem.config.js --env production"
         
         print_warning "Direct deployment requires SSH configuration. Please manually deploy using the steps above."
     fi

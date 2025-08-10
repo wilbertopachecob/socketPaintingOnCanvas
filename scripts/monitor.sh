@@ -22,7 +22,7 @@ pm2 status
 
 # Memory and CPU usage
 echo -e "\n${GREEN}💻 System Resources:${NC}"
-pm2 monit --no-daemon | head -20
+pm2 list
 
 # Recent logs
 echo -e "\n${GREEN}📝 Recent Logs (last 50 lines):${NC}"
