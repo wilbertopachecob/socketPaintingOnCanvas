@@ -7,6 +7,8 @@ jest.mock('socket.io-client');
 
 const mockIo = io as jest.MockedFunction<typeof io>;
 
+type SocketEventHandler = (...args: unknown[]) => void;
+
 describe('useSocket Hook', () => {
   let mockSocket: jest.Mocked<Socket>;
 
@@ -44,7 +46,7 @@ describe('useSocket Hook', () => {
     // Get the connect handler
     const connectHandler = mockSocket.on.mock.calls.find(
       call => call[0] === 'connect'
-    )?.[1] as Function;
+    )?.[1] as SocketEventHandler;
     
     act(() => {
       connectHandler();
@@ -60,7 +62,7 @@ describe('useSocket Hook', () => {
     // First connect
     const connectHandler = mockSocket.on.mock.calls.find(
       call => call[0] === 'connect'
-    )?.[1] as Function;
+    )?.[1] as SocketEventHandler;
     
     act(() => {
       connectHandler();
@@ -71,7 +73,7 @@ describe('useSocket Hook', () => {
     // Then disconnect
     const disconnectHandler = mockSocket.on.mock.calls.find(
       call => call[0] === 'disconnect'
-    )?.[1] as Function;
+    )?.[1] as SocketEventHandler;
     
     act(() => {
       disconnectHandler();
@@ -85,7 +87,7 @@ describe('useSocket Hook', () => {
     
     const errorHandler = mockSocket.on.mock.calls.find(
       call => call[0] === 'connect_error'
-    )?.[1] as Function;
+    )?.[1] as SocketEventHandler;
     
     act(() => {
       errorHandler(new Error('Connection failed'));
@@ -99,7 +101,7 @@ describe('useSocket Hook', () => {
     
     const userCountHandler = mockSocket.on.mock.calls.find(
       call => call[0] === 'user_count_update'
-    )?.[1] as Function;
+    )?.[1] as SocketEventHandler;
     
     act(() => {
       userCountHandler({ currentUsers: 3, maxUsers: 10 });
