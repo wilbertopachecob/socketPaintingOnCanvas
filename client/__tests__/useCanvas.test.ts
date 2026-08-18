@@ -6,6 +6,8 @@ import { CanvasControls } from '@/types';
 // Mock socket.io-client
 jest.mock('socket.io-client');
 
+type SocketEventHandler = (...args: unknown[]) => void;
+
 describe('useCanvas Hook', () => {
   let mockSocket: jest.Mocked<Socket>;
   let mockCanvas: HTMLCanvasElement;
@@ -219,7 +221,7 @@ describe('useCanvas Hook', () => {
     // Get the draw_line handler
     const drawLineHandler = mockSocket.on.mock.calls.find(
       call => call[0] === 'draw_line'
-    )?.[1] as Function;
+    )?.[1] as SocketEventHandler;
     
     act(() => {
       drawLineHandler({
@@ -242,7 +244,7 @@ describe('useCanvas Hook', () => {
     // Get the clear_canvas handler
     const clearCanvasHandler = mockSocket.on.mock.calls.find(
       call => call[0] === 'clear_canvas'
-    )?.[1] as Function;
+    )?.[1] as SocketEventHandler;
     
     act(() => {
       clearCanvasHandler();
@@ -316,7 +318,7 @@ describe('useCanvas Hook', () => {
     // Get the draw_line handler
     const drawLineHandler = mockSocket.on.mock.calls.find(
       call => call[0] === 'draw_line'
-    )?.[1] as Function;
+    )?.[1] as SocketEventHandler;
     
     // Test with invalid line data
     act(() => {

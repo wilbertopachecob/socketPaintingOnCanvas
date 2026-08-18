@@ -68,7 +68,7 @@ app.use((err, _req, res, _next) => {
 });
 
 // Serve React app for client-side routing (catch-all for SPA)
-app.get('*', (req, res) => {
+app.get('/{*splat}', (req, res) => {
   const indexPath = path.join(__dirname, '../dist/index.html');
   if (require('fs').existsSync(indexPath)) {
     res.sendFile(indexPath);

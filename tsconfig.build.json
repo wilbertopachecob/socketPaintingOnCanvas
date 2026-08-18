@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "types": []
+  },
+  "include": [
+    "client/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "server",
+    "coverage",
+    "client/__tests__"
+  ]
+}

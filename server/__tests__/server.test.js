@@ -41,7 +41,7 @@ const createTestApp = () => {
   });
   
   // Serve React app for non-API routes
-  app.get('*', (req, res) => {
+  app.get('/{*splat}', (req, res) => {
     const indexPath = path.join(__dirname, '../dist/index.html');
     if (require('fs').existsSync(indexPath)) {
       res.sendFile(indexPath);
